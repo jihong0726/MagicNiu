@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>牛牛速算器 (3/6 自动转换版)</title>
+    <style>
+        :root {
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --red: #e63946;
+            --black: #1d3557;
+            --gray: #a8dadc;
+            --text-main: #2b2d42;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+        body {
+            margin: 0; padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 顶部标题 */
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 1.5rem; color: var(--red); }
+        .header p { margin: 5px 0 0; font-size: 0.85rem; color: #666; }
+
+        /* 牌库区 */
+        .deck-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+            width: 100%; max-width: 400px;
+            transition: opacity 0.3s ease;
+        }
+        .deck-grid.disabled { opacity: 0.4; pointer-events: none; }
+        
+        .card-btn {
+            background: var(--card-bg); border: 2px solid transparent;
+            border-radius: 10px; padding: 18px 0;
+            font-size: 1.3rem; font-weight: 700; color: var(--black);
+            text-align: center; box-shadow: var(--shadow);
+            cursor: pointer; transition: transform 0.1s, background 0.2s;
+            user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+        .card-btn:active { transform: scale(0.92); background: #f0f0f0; }
+        .card-btn.special { color: var(--red); border-color: rgba(230, 57, 70, 0.3); }
+
+        /* 选牌池 */
+        .pool-section {
+            width: 100%; max-width: 400px; margin-top: 30px;
+            background: var(--card-bg); border-radius: 16px;
+            padding: 20px; box-shadow: var(--shadow);
+            border: 2px dashed #cbd5e1;
+            min-height: 120px; display: flex; flex-direction: column;
+        }
+        .pool-header { font-size: 0.9rem; color: #64748b; margin-bottom: 12px; font-weight: 500; }
+        .pool-cards { display: flex; gap: 8px; flex-wrap: wrap; min-height: 45px; }
+        
+        .selected-card {
+            background: var(--black); color: white;
+            padding: 10px 16px; border-radius: 8px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            animation: slideUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .selected-card:hover { background: var(--red); }
+
+        /* 结果展示区 */
+        .result-panel {
+            width: 100%; max-width: 400px; margin-top: 20px;
+            background: var(--red); color: white;
+            border-radius: 16px; padding: 25px 20px;
+            text-align: center; box-shadow: 0 10px 15px -3px rgba(230, 57, 70, 0.4);
+            display: none; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .result-panel.show { display: block; }
+        .result-title { font-size: 2.2rem; font-weight: 800; margin: 0 0 15px; letter-spacing: 2px; }
+        
+        .combo-display {
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px;
+        }
+        .combo-group { display: flex; gap: 5px; }
+        .combo-card { background: white; color: var(--black); padding: 5px 10px; border-radius: 6px; font-weight: bold; }
+        .combo-divider { font-weight: bold; color: rgba(255,255,255,0.6); }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>牛牛速算器</h1>
+        <p>已默认开启 3/6 自动互换最优解</p>
+    </div>
+
+    <div class="deck-grid" id="deckGrid">
+        <div class="card-btn" onclick="handleCardClick('A', 1)">A</div>
+        <div class="card-btn" onclick="handleCardClick('2', 2)">2</div>
+        <div class="card-btn special" onclick="handleCardClick('3', 3)">3</div>
+        <div class="card-btn" onclick="handleCardClick('4', 4)">4</div>
+        <div class="card-btn" onclick="handleCardClick('5', 5)">5</div>
+        <div class="card-btn special" onclick="handleCardClick('6', 6)">6</div>
+        <div class="card-btn" onclick="handleCardClick('7', 7)">7</div>
+        <div class="card-btn" onclick="handleCardClick('8', 8)">8</div>
+        <div class="card-btn" onclick="handleCardClick('9', 9)">9</div>
+        <div class="card-btn" onclick="handleCardClick('10', 10)">10</div>
+        <div class="card-btn" onclick="handleCardClick('J', 10)">J</div>
+        <div class="card-btn" onclick="handleCardClick('Q', 10)">Q</div>
+        <div class="card-btn" onclick="handleCardClick('K', 10)">K</div>
+    </div>
+
+    <div class="pool-section">
+        <div class="pool-header">已选手牌 (点击可移除) <span id="cardCount">0/5</span></div>
+        <div class="pool-cards" id="poolCards"></div>
+    </div>
+
+    <div class="result-panel" id="resultPanel">
+        <h2 class="result-title" id="resultText">--</h2>
+        <div class="combo-display" id="comboDisplay">
+            </div>
+    </div>
+
+    <script>
+        // 核心状态管理
+        const state = {
+            cards: [],
+            maxCards: 5
+        };
+
+        const DOM = {
+            deck: document.getElementById('deckGrid'),
+            pool: document.getElementById('poolCards'),
+            count: document.getElementById('cardCount'),
+            resultPanel: document.getElementById('resultPanel'),
+            resultText: document.getElementById('resultText'),
+            comboDisplay: document.getElementById('comboDisplay')
+        };
+
+        // 交互逻辑
+        function handleCardClick(name, value) {
+            if (state.cards.length >= state.maxCards) return;
+            
+            state.cards.push({ name, value, id: Date.now() + Math.random() });
+            updateUI();
+        }
+
+        function removeCard(id) {
+            state.cards = state.cards.filter(c => c.id !== id);
+            updateUI();
+        }
+
+        function updateUI() {
+            // 更新卡池渲染
+            DOM.pool.innerHTML = '';
+            state.cards.forEach(card => {
+                const el = document.createElement('div');
+                el.className = 'selected-card';
+                el.innerText = card.name;
+                el.onclick = () => removeCard(card.id);
+                DOM.pool.appendChild(el);
+            });
+
+            // 更新计数与牌库状态
+            DOM.count.innerText = `${state.cards.length}/${state.maxCards}`;
+            if (state.cards.length === state.maxCards) {
+                DOM.deck.classList.add('disabled');
+                calculateResult();
+            } else {
+                DOM.deck.classList.remove('disabled');
+                DOM.resultPanel.classList.remove('show');
+            }
+        }
+
+        // 算法核心：3/6 变种矩阵生成
+        function generateVariations(cards) {
+            let variations = [[]];
+            for (let card of cards) {
+                let options = [{ ...card, calcValue: card.value }];
+                // 处理 3/6 互换，并在显示时标记
+                if (card.name === '3') options.push({ ...card, calcValue: 6, display: '3当6' });
+                if (card.name === '6') options.push({ ...card, calcValue: 3, display: '6当3' });
+                
+                let nextVariations = [];
+                for (let v of variations) {
+                    for (let opt of options) {
+                        nextVariations.push([...v, opt]);
+                    }
+                }
+                variations = nextVariations;
+            }
+            return variations;
+        }
+
+        // 算法核心：计算最优解
+        function calculateResult() {
+            const isFiveGong = state.cards.every(c => ['J', 'Q', 'K'].includes(c.name));
+            if (isFiveGong) {
+                renderResult("五公 (金牛)", state.cards.slice(0, 3), state.cards.slice(3, 5));
+                return;
+            }
+
+            const allVariations = generateVariations(state.cards);
+            let bestScore = -1;
+            let bestBase = [];
+            let bestPoints = [];
+
+            for (const varSet of allVariations) {
+                // 遍历 5 选 3 的组合 (C5取3 = 10种)
+                for (let i = 0; i < 3; i++) {
+                    for (let j = i + 1; j < 4; j++) {
+                        for (let k = j + 1; k < 5; k++) {
+                            const baseCards = [varSet[i], varSet[j], varSet[k]];
+                            const baseSum = baseCards.reduce((sum, c) => sum + c.calcValue, 0);
+
+                            if (baseSum % 10 === 0) { // 找到牛的基石
+                                const pointCards = varSet.filter((_, idx) => idx !== i && idx !== j && idx !== k);
+                                const pointSum = pointCards.reduce((sum, c) => sum + c.calcValue, 0);
+                                const currentScore = pointSum % 10 === 0 ? 10 : pointSum % 10;
+
+                                if (currentScore > bestScore) {
+                                    bestScore = currentScore;
+                                    bestBase = baseCards;
+                                    bestPoints = pointCards;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (bestScore === -1) {
+                renderResult("没牛", state.cards, []);
+            } else if (bestScore === 10) {
+                renderResult("牛牛 !!", bestBase, bestPoints);
+            } else {
+                renderResult(`牛 ${bestScore}`, bestBase, bestPoints);
+            }
+        }
+
+        // 渲染结果与拆解卡组
+        function renderResult(title, baseGroup, pointGroup) {
+            DOM.resultText.innerText = title;
+            DOM.resultPanel.classList.add('show');
+            
+            let html = '';
+            if (pointGroup.length > 0) {
+                // 有牛的情况：拆分基石和点数
+                html += `<div class="combo-group">${baseGroup.map(c => `<div class="combo-card">${c.display || c.name}</div>`).join('')}</div>`;
+                html += `<div class="combo-divider">|</div>`;
+                html += `<div class="combo-group">${pointGroup.map(c => `<div class="combo-card" style="color:#e63946">${c.display || c.name}</div>`).join('')}</div>`;
+            } else {
+                // 没牛的情况：全量展示
+                html += `<div class="combo-group">${baseGroup.map(c => `<div class="combo-card">${c.name}</div>`).join('')}</div>`;
+            }
+            DOM.comboDisplay.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
