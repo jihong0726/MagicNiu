@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MagicNiu 极速算牛</title>
+    <title>神算牛牛 - 极速算牌</title>
     <style>
         :root {
             --bg-color: #f2f4f8;
+            --desktop-bg: #cbd5e1; /* 电脑端的深灰色背景 */
             --surface: #ffffff;
             --text-primary: #1c1e21;
             --text-secondary: #8a8d91;
@@ -19,21 +20,44 @@
 
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
 
+        /* ====== 核心修复：电脑端与手机端的双重适配 ====== */
+        html {
+            background-color: var(--desktop-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
         body {
             margin: 0; 
-            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+            width: 100%;
+            max-width: 430px; /* 限制最大宽度，类似 iPhone Pro Max */
+            height: 100dvh;   /* 完美适配移动端 */
+            max-height: 900px; /* 限制电脑端最高高度 */
             background-color: var(--bg-color);
             display: flex; flex-direction: column;
-            height: 100vh;
+            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+            position: relative;
             overflow: hidden;
+            /* 电脑端阴影与圆角 */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
         }
+
+        @media (max-width: 480px) {
+            html { background-color: var(--bg-color); display: block; }
+            body { max-width: 100%; max-height: none; box-shadow: none; border-radius: 0; }
+        }
+        /* ============================================== */
 
         .display-board {
             flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding-bottom: 10px;
         }
 
-        .brand { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 15px; letter-spacing: -0.5px; }
+        /* 名称修改为中文 */
+        .brand { font-size: 1.5rem; font-weight: 900; color: var(--text-primary); margin-bottom: 15px; letter-spacing: 1px; }
         .brand span { color: var(--accent-red); }
 
         .slots-container { 
@@ -76,7 +100,7 @@
         .reset-btn {
             margin-top: 10px; padding: 10px 28px; border-radius: 20px; background: var(--text-primary); color: white;
             font-weight: bold; font-size: 1rem; opacity: 0; pointer-events: none; transform: translateY(10px);
-            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: none; outline: none;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: none; outline: none; cursor: pointer;
         }
         .reset-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .reset-btn:active { transform: scale(0.95); }
@@ -85,6 +109,7 @@
             background: var(--surface); border-radius: 24px 24px 0 0;
             padding: 25px 15px calc(20px + env(safe-area-inset-bottom));
             box-shadow: 0 -10px 30px rgba(0,0,0,0.03); margin: 0 -20px;
+            flex-shrink: 0; /* 防止键盘区在电脑端被过度拉伸 */
         }
         
         .key-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; max-width: 420px; margin: 0 auto; }
@@ -99,7 +124,8 @@
         .key-btn.special-blue { color: var(--accent-blue); }
         .key-grid.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
         
-        .key-row-bottom { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
+        /* 修复拉伸核心：加入 align-items: flex-start */
+        .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; }
         .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
 
         @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -108,10 +134,9 @@
 <body>
 
     <div class="display-board">
-        <div class="brand">Magic<span>Niu</span></div>
+        <div class="brand">神算<span>牛牛</span></div>
         
-        <div class="slots-container" id="slots">
-            </div>
+        <div class="slots-container" id="slots"></div>
 
         <div class="result-area">
             <h2 class="result-title" id="resultTitle">--</h2>
@@ -155,7 +180,6 @@
             if (state.cards.length >= 5) return;
             vibrate(30);
             
-            // 为每张牌生成唯一 ID，取代数组的 index
             let uniqueId = Date.now().toString() + Math.floor(Math.random() * 10000);
             state.cards.push({ name, value, id: uniqueId });
             
@@ -169,13 +193,10 @@
             }
         }
 
-        // 接收唯一 ID 进行删除，而不是位置序号
         function removeCard(id) {
             vibrate(20);
-            // 过滤掉被点击的那张牌
             state.cards = state.cards.filter(c => c.id !== id);
             
-            // 无论处于什么状态，一旦删牌，立刻恢复为选牌界面状态
             DOM.slots.classList.remove('result-mode');
             DOM.keyboard.classList.remove('disabled');
             DOM.keyboardBottom.style.opacity = '1';
@@ -203,7 +224,6 @@
             if (c.name === '3' || c.name === '6') colorClass = 'red';
             if (['J', 'Q', 'K'].includes(c.name)) colorClass = 'blue';
             let badge = c.mutated ? `<div class="badge">${c.mutated}</div>` : '';
-            // 绑定 onclick 时传入独一无二的 c.id
             let clickAttr = isClickable ? `onclick="removeCard('${c.id}')"` : '';
             return `<div class="slot filled ${colorClass}" ${clickAttr}>${c.name}${badge}</div>`;
         }
