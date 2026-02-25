@@ -7,10 +7,10 @@
     <style>
         :root {
             --bg-color: #f2f4f8;
-            --desktop-bg: #cbd5e1; /* 电脑端的深灰色背景 */
+            --desktop-bg: #cbd5e1;
             --surface: #ffffff;
             --text-primary: #1c1e21;
-            --text-secondary: #8a8d91;
+            --text-gray: #8a8d91;
             --accent-red: #ff3b30;
             --accent-blue: #007aff;
             --accent-gold: linear-gradient(135deg, #ffd700, #ff8c00);
@@ -20,59 +20,36 @@
 
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
 
-        /* ====== 核心修复：电脑端与手机端的双重适配 ====== */
-        html {
-            background-color: var(--desktop-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
+        html { background-color: var(--desktop-bg); display: flex; justify-content: center; align-items: center; height: 100%; }
 
         body {
-            margin: 0; 
-            width: 100%;
-            max-width: 430px; /* 限制最大宽度，类似 iPhone Pro Max */
-            height: 100dvh;   /* 完美适配移动端 */
-            max-height: 900px; /* 限制电脑端最高高度 */
-            background-color: var(--bg-color);
-            display: flex; flex-direction: column;
+            margin: 0; width: 100%; max-width: 430px; height: 100dvh; max-height: 900px;
+            background-color: var(--bg-color); display: flex; flex-direction: column;
             padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
-            position: relative;
-            overflow: hidden;
-            /* 电脑端阴影与圆角 */
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border-radius: 20px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border-radius: 20px;
         }
 
         @media (max-width: 480px) {
             html { background-color: var(--bg-color); display: block; }
             body { max-width: 100%; max-height: none; box-shadow: none; border-radius: 0; }
         }
-        /* ============================================== */
 
-        .display-board {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding-bottom: 10px;
-        }
-
-        /* 名称修改为中文 */
+        .display-board { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 10px; }
         .brand { font-size: 1.5rem; font-weight: 900; color: var(--text-primary); margin-bottom: 15px; letter-spacing: 1px; }
         .brand span { color: var(--accent-red); }
 
         .slots-container { 
             display: flex; gap: 10px; width: 100%; max-width: 380px; 
             justify-content: center; align-items: center; margin-bottom: 20px;
-            min-height: 190px; 
-            transition: all 0.3s ease;
+            min-height: 190px; transition: all 0.3s ease;
         }
         .slots-container.result-mode { flex-direction: column; gap: 15px; }
         
-        .card-row { display: flex; gap: 10px; justify-content: center; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .card-row { display: flex; gap: 10px; justify-content: center; animation: fadeUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
         .slot {
-            width: 55px; height: 77px; 
-            border-radius: 8px; position: relative;
+            width: 55px; height: 77px; border-radius: 8px; position: relative;
             background: var(--bg-color); box-shadow: var(--shadow-inset);
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; font-weight: 800; color: var(--text-primary);
@@ -85,18 +62,35 @@
         .slot.blue { color: var(--accent-blue); }
 
         .badge {
-            position: absolute; top: -8px; right: -8px;
-            background: var(--accent-red); color: white;
+            position: absolute; top: -8px; right: -8px; background: var(--accent-red); color: white;
             font-size: 0.65rem; padding: 2px 6px; border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(255, 59, 48, 0.4);
-            animation: popIn 0.3s ease 0.2s both;
+            box-shadow: 0 2px 4px rgba(255, 59, 48, 0.4); animation: fadeUp 0.3s ease 0.2s both;
         }
 
-        .result-area { min-height: 80px; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .result-title { font-size: 2.5rem; font-weight: 900; margin: 0; opacity: 0; transform: scale(0.8); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .result-title.show { opacity: 1; transform: scale(1); }
-        .result-title.gold { background: var(--accent-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 4px 12px rgba(255,140,0,0.3); }
+        .result-area { min-height: 85px; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
+        /* 结果文案基础样式 */
+        .result-title { font-size: 1.8rem; font-weight: 900; margin: 0; opacity: 0; display: none; text-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .result-title.show { display: block; opacity: 1; }
+        
+        /* 颜色分级体系 */
+        .color-gray { color: var(--text-gray); }
+        .color-normal { color: var(--text-primary); }
+        .color-red { color: var(--accent-red); }
+        .color-gold { background: var(--accent-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 4px 12px rgba(255,140,0,0.3); font-size: 2.2rem; }
+
+        /* 特效动画分级 */
+        .anim-shake { animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+        .anim-pop { animation: popNormal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .anim-bounce { animation: bounceStrong 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .anim-explode { animation: explode 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popNormal { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        @keyframes bounceStrong { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.1); } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
+        @keyframes explode { 0% { opacity: 0; transform: scale(0.5); } 60% { opacity: 1; transform: scale(1.2); text-shadow: 0 10px 20px rgba(255,140,0,0.5); } 100% { transform: scale(1); } }
+
         .reset-btn {
             margin-top: 10px; padding: 10px 28px; border-radius: 20px; background: var(--text-primary); color: white;
             font-weight: bold; font-size: 1rem; opacity: 0; pointer-events: none; transform: translateY(10px);
@@ -106,10 +100,8 @@
         .reset-btn:active { transform: scale(0.95); }
 
         .keyboard {
-            background: var(--surface); border-radius: 24px 24px 0 0;
-            padding: 25px 15px calc(20px + env(safe-area-inset-bottom));
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.03); margin: 0 -20px;
-            flex-shrink: 0; /* 防止键盘区在电脑端被过度拉伸 */
+            background: var(--surface); border-radius: 24px 24px 0 0; padding: 25px 15px calc(20px + env(safe-area-inset-bottom));
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.03); margin: 0 -20px; flex-shrink: 0;
         }
         
         .key-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; max-width: 420px; margin: 0 auto; }
@@ -124,20 +116,15 @@
         .key-btn.special-blue { color: var(--accent-blue); }
         .key-grid.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
         
-        /* 修复拉伸核心：加入 align-items: flex-start */
         .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; }
         .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
-
-        @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="display-board">
         <div class="brand">神算<span>牛牛</span></div>
-        
         <div class="slots-container" id="slots"></div>
-
         <div class="result-area">
             <h2 class="result-title" id="resultTitle">--</h2>
             <button class="reset-btn" id="resetBtn" onclick="resetGame()">下一局</button>
@@ -260,7 +247,7 @@
         function calculateAndShow() {
             const isFiveGong = state.cards.every(c => ['J', 'Q', 'K'].includes(c.name));
             if (isFiveGong) {
-                return applyResultView("五公 (金牛)", true, state.cards.slice(3, 5), state.cards.slice(0, 3));
+                return applyResultView("👑 满堂红！金牛 (五公) 👑", "color-gold", "anim-explode", true, state.cards.slice(3, 5), state.cards.slice(0, 3));
             }
 
             const allVars = getVariations(state.cards);
@@ -284,17 +271,29 @@
                 }
             }
 
+            // 情绪文案与颜色引擎映射
             if (bestScore === -1) {
-                applyResultView("无赖 (没牛)", false, [], state.cards);
+                applyResultView("💸 凉凉！没牛", "color-gray", "anim-shake", false, [], state.cards);
             } else if (bestScore === 10) {
-                applyResultView("牛牛 !!", true, finalPoints, finalBase);
+                applyResultView("🧨 霸气通杀！牛牛 🧨", "color-gold", "anim-explode", true, finalPoints, finalBase);
             } else {
-                applyResultView(`牛 ${bestScore}`, false, finalPoints, finalBase);
+                const textMap = {
+                    1: "🤏 险过剃头！牛 1", 2: "🐢 顶住啊！牛 2", 3: "🥺 勉强及格！牛 3",
+                    4: "🛡️ 防守牌！牛 4", 5: "🤔 有得拼！牛 5", 6: "💪 坐和望赢！牛 6",
+                    7: "🤩 漂亮起飞！牛 7", 8: "💰 准备收钱！牛 8", 9: "🚀 赢到笑！牛 9"
+                };
+                
+                let text = textMap[bestScore];
+                let colorCls = bestScore <= 6 ? "color-normal" : "color-red";
+                let animCls = bestScore <= 6 ? "anim-pop" : "anim-bounce";
+                
+                applyResultView(text, colorCls, animCls, false, finalPoints, finalBase);
             }
         }
 
-        function applyResultView(text, isPremium, topCards, bottomCards) {
-            vibrate(isPremium ? [50, 50, 100] : 100); 
+        // 终极 UI 渲染引擎
+        function applyResultView(text, colorClass, animClass, isPremium, topCards, bottomCards) {
+            vibrate(isPremium ? [50, 50, 100] : (topCards.length > 0 ? 100 : [30, 30])); 
             
             if (topCards.length > 0 && bottomCards.length === 3) {
                 DOM.slots.classList.add('result-mode'); 
@@ -311,8 +310,12 @@
                 DOM.slots.innerHTML = bottomCards.map(c => getCardHTML(c, true)).join('');
             }
 
+            // 重置 DOM 以确保每次都能触发动画
+            DOM.resultTitle.className = `result-title`; 
+            void DOM.resultTitle.offsetWidth; 
+            
             DOM.resultTitle.innerText = text;
-            DOM.resultTitle.className = `result-title show ${isPremium ? 'gold' : ''}`;
+            DOM.resultTitle.className = `result-title show ${colorClass} ${animClass}`;
             
             setTimeout(() => { DOM.resetBtn.classList.add('show'); }, 300);
         }
