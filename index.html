@@ -28,7 +28,6 @@
             overflow: hidden;
         }
 
-        /* 顶部展示区 */
         .display-board {
             flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding-bottom: 10px;
@@ -37,11 +36,10 @@
         .brand { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 15px; letter-spacing: -0.5px; }
         .brand span { color: var(--accent-red); }
 
-        /* 动态卡槽区：默认单行，出结果变双行 */
         .slots-container { 
             display: flex; gap: 10px; width: 100%; max-width: 380px; 
             justify-content: center; align-items: center; margin-bottom: 20px;
-            min-height: 190px; /* 预留双行的高度防抖动 */
+            min-height: 190px; 
             transition: all 0.3s ease;
         }
         .slots-container.result-mode { flex-direction: column; gap: 15px; }
@@ -49,7 +47,7 @@
         .card-row { display: flex; gap: 10px; justify-content: center; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
         .slot {
-            width: 55px; height: 77px; /* 固定卡牌尺寸 */
+            width: 55px; height: 77px; 
             border-radius: 8px; position: relative;
             background: var(--bg-color); box-shadow: var(--shadow-inset);
             display: flex; align-items: center; justify-content: center;
@@ -57,11 +55,11 @@
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
-        .slot.filled { background: var(--surface); box-shadow: var(--shadow-pop); transform: translateY(-2px); }
+        .slot.filled { background: var(--surface); box-shadow: var(--shadow-pop); transform: translateY(-2px); cursor: pointer; }
+        .slot.filled:active { transform: scale(0.9); box-shadow: var(--shadow-inset); }
         .slot.red { color: var(--accent-red); }
         .slot.blue { color: var(--accent-blue); }
 
-        /* 变牌小标签 */
         .badge {
             position: absolute; top: -8px; right: -8px;
             background: var(--accent-red); color: white;
@@ -70,7 +68,6 @@
             animation: popIn 0.3s ease 0.2s both;
         }
 
-        /* 结果展示区 */
         .result-area { min-height: 80px; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .result-title { font-size: 2.5rem; font-weight: 900; margin: 0; opacity: 0; transform: scale(0.8); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .result-title.show { opacity: 1; transform: scale(1); }
@@ -84,7 +81,6 @@
         .reset-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .reset-btn:active { transform: scale(0.95); }
 
-        /* 底部操作区 (拇指键盘) */
         .keyboard {
             background: var(--surface); border-radius: 24px 24px 0 0;
             padding: 25px 15px calc(20px + env(safe-area-inset-bottom));
@@ -158,28 +154,42 @@
         function addCard(name, value) {
             if (state.cards.length >= 5) return;
             vibrate(30);
-            state.cards.push({ name, value, id: Date.now() + Math.random() });
-            renderPickingState();
+            
+            // 为每张牌生成唯一 ID，取代数组的 index
+            let uniqueId = Date.now().toString() + Math.floor(Math.random() * 10000);
+            state.cards.push({ name, value, id: uniqueId });
             
             if (state.cards.length === 5) {
                 DOM.keyboard.classList.add('disabled');
                 DOM.keyboardBottom.style.opacity = '0.5';
                 DOM.keyboardBottom.style.pointerEvents = 'none';
                 calculateAndShow();
+            } else {
+                renderPickingState();
             }
         }
 
-        function removeCard(index) {
-            if (state.cards.length === 5) return; 
+        // 接收唯一 ID 进行删除，而不是位置序号
+        function removeCard(id) {
             vibrate(20);
-            state.cards.splice(index, 1);
+            // 过滤掉被点击的那张牌
+            state.cards = state.cards.filter(c => c.id !== id);
+            
+            // 无论处于什么状态，一旦删牌，立刻恢复为选牌界面状态
+            DOM.slots.classList.remove('result-mode');
+            DOM.keyboard.classList.remove('disabled');
+            DOM.keyboardBottom.style.opacity = '1';
+            DOM.keyboardBottom.style.pointerEvents = 'auto';
+            DOM.resultTitle.className = 'result-title';
+            DOM.resetBtn.classList.remove('show');
+            
             renderPickingState();
         }
 
         function resetGame() {
             vibrate([30, 50]);
             state.cards = [];
-            DOM.slots.classList.remove('result-mode'); // 恢复单行
+            DOM.slots.classList.remove('result-mode');
             DOM.keyboard.classList.remove('disabled');
             DOM.keyboardBottom.style.opacity = '1';
             DOM.keyboardBottom.style.pointerEvents = 'auto';
@@ -188,23 +198,22 @@
             renderPickingState();
         }
 
-        // 生成单张卡牌的 HTML
-        function getCardHTML(c, isClickable = false, index = 0) {
+        function getCardHTML(c, isClickable = false) {
             let colorClass = '';
             if (c.name === '3' || c.name === '6') colorClass = 'red';
             if (['J', 'Q', 'K'].includes(c.name)) colorClass = 'blue';
             let badge = c.mutated ? `<div class="badge">${c.mutated}</div>` : '';
-            let clickAttr = isClickable ? `onclick="removeCard(${index})"` : '';
+            // 绑定 onclick 时传入独一无二的 c.id
+            let clickAttr = isClickable ? `onclick="removeCard('${c.id}')"` : '';
             return `<div class="slot filled ${colorClass}" ${clickAttr}>${c.name}${badge}</div>`;
         }
 
-        // 选牌时的单行渲染
         function renderPickingState() {
             DOM.slots.classList.remove('result-mode');
             let html = '';
             for (let i = 0; i < 5; i++) {
                 if (state.cards[i]) {
-                    html += getCardHTML(state.cards[i], true, i);
+                    html += getCardHTML(state.cards[i], true);
                 } else {
                     html += `<div class="slot"></div>`;
                 }
@@ -212,12 +221,11 @@
             DOM.slots.innerHTML = html;
         }
 
-        // 算法：生成带有变牌标记的组合
         function getVariations(cards) {
             let variations = [[]];
             for (let card of cards) {
                 let opts = [{ ...card, val: card.value }];
-                if (card.name === '3') opts.push({ ...card, val: 6, mutated: '当6' }); // 标记变牌
+                if (card.name === '3') opts.push({ ...card, val: 6, mutated: '当6' });
                 if (card.name === '6') opts.push({ ...card, val: 3, mutated: '当3' });
                 
                 let next = [];
@@ -257,7 +265,6 @@
             }
 
             if (bestScore === -1) {
-                // 没牛：保留一行展示
                 applyResultView("无赖 (没牛)", false, [], state.cards);
             } else if (bestScore === 10) {
                 applyResultView("牛牛 !!", true, finalPoints, finalBase);
@@ -266,25 +273,22 @@
             }
         }
 
-        // UI：触发结果渲染 (上2下3布局)
         function applyResultView(text, isPremium, topCards, bottomCards) {
             vibrate(isPremium ? [50, 50, 100] : 100); 
             
-            // 组装上下两排卡牌
             if (topCards.length > 0 && bottomCards.length === 3) {
-                DOM.slots.classList.add('result-mode'); // 切换到双行排版
+                DOM.slots.classList.add('result-mode'); 
                 DOM.slots.innerHTML = `
                     <div class="card-row">
-                        ${topCards.map(c => getCardHTML(c, false)).join('')}
+                        ${topCards.map(c => getCardHTML(c, true)).join('')}
                     </div>
                     <div class="card-row">
-                        ${bottomCards.map(c => getCardHTML(c, false)).join('')}
+                        ${bottomCards.map(c => getCardHTML(c, true)).join('')}
                     </div>
                 `;
             } else {
-                // 如果没牛，依然排成一行，但是不可点击
                 DOM.slots.classList.remove('result-mode');
-                DOM.slots.innerHTML = bottomCards.map(c => getCardHTML(c, false)).join('');
+                DOM.slots.innerHTML = bottomCards.map(c => getCardHTML(c, true)).join('');
             }
 
             DOM.resultTitle.innerText = text;
