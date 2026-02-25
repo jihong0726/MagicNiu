@@ -13,7 +13,6 @@
             --accent-red: #ff3b30;
             --accent-blue: #007aff;
             --accent-gold: linear-gradient(135deg, #ffd700, #ff8c00);
-            /* 高级拟真阴影 */
             --shadow-pop: 6px 6px 12px #e3e5e8, -6px -6px 12px #ffffff;
             --shadow-inset: inset 4px 4px 8px #e3e5e8, inset -4px -4px 8px #ffffff;
         }
@@ -29,32 +28,47 @@
             overflow: hidden;
         }
 
-        /* 顶部展示区 (计算器屏幕理念) */
+        /* 顶部展示区 */
         .display-board {
             flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding-bottom: 20px;
+            padding-bottom: 10px;
         }
 
-        .brand { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 20px; letter-spacing: -0.5px; }
+        .brand { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 15px; letter-spacing: -0.5px; }
         .brand span { color: var(--accent-red); }
 
-        .slots-container { display: flex; gap: 10px; width: 100%; max-width: 380px; justify-content: center; margin-bottom: 30px; }
+        /* 动态卡槽区：默认单行，出结果变双行 */
+        .slots-container { 
+            display: flex; gap: 10px; width: 100%; max-width: 380px; 
+            justify-content: center; align-items: center; margin-bottom: 20px;
+            min-height: 190px; /* 预留双行的高度防抖动 */
+            transition: all 0.3s ease;
+        }
+        .slots-container.result-mode { flex-direction: column; gap: 15px; }
         
+        .card-row { display: flex; gap: 10px; justify-content: center; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
         .slot {
-            width: 18%; aspect-ratio: 2.5 / 3.5;
-            border-radius: 8px;
-            background: var(--bg-color);
-            box-shadow: var(--shadow-inset);
+            width: 55px; height: 77px; /* 固定卡牌尺寸 */
+            border-radius: 8px; position: relative;
+            background: var(--bg-color); box-shadow: var(--shadow-inset);
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; font-weight: 800; color: var(--text-primary);
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
-        .slot.filled {
-            background: var(--surface); box-shadow: var(--shadow-pop); transform: translateY(-4px);
-        }
+        .slot.filled { background: var(--surface); box-shadow: var(--shadow-pop); transform: translateY(-2px); }
         .slot.red { color: var(--accent-red); }
         .slot.blue { color: var(--accent-blue); }
+
+        /* 变牌小标签 */
+        .badge {
+            position: absolute; top: -8px; right: -8px;
+            background: var(--accent-red); color: white;
+            font-size: 0.65rem; padding: 2px 6px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(255, 59, 48, 0.4);
+            animation: popIn 0.3s ease 0.2s both;
+        }
 
         /* 结果展示区 */
         .result-area { min-height: 80px; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -63,41 +77,36 @@
         .result-title.gold { background: var(--accent-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 4px 12px rgba(255,140,0,0.3); }
         
         .reset-btn {
-            margin-top: 15px; padding: 10px 24px; border-radius: 20px; background: var(--text-primary); color: white;
+            margin-top: 10px; padding: 10px 28px; border-radius: 20px; background: var(--text-primary); color: white;
             font-weight: bold; font-size: 1rem; opacity: 0; pointer-events: none; transform: translateY(10px);
-            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: none;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: none; outline: none;
         }
         .reset-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .reset-btn:active { transform: scale(0.95); }
 
-        /* 底部操作区 (拇指操作区) */
+        /* 底部操作区 (拇指键盘) */
         .keyboard {
-            background: var(--surface);
-            border-radius: 24px 24px 0 0;
+            background: var(--surface); border-radius: 24px 24px 0 0;
             padding: 25px 15px calc(20px + env(safe-area-inset-bottom));
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.03);
-            margin: 0 -20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.03); margin: 0 -20px;
         }
         
-        .key-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; max-width: 420px; margin: 0 auto;
-        }
+        .key-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; max-width: 420px; margin: 0 auto; }
         
         .key-btn {
-            aspect-ratio: 1; border-radius: 12px; background: var(--surface);
-            box-shadow: var(--shadow-pop); display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; font-weight: 700; color: var(--text-primary);
+            aspect-ratio: 1; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-pop);
+            display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; color: var(--text-primary);
             transition: all 0.1s ease; cursor: pointer; border: none; outline: none;
         }
-        
         .key-btn:active { box-shadow: var(--shadow-inset); transform: scale(0.96); }
         .key-btn.special-red { color: var(--accent-red); font-size: 1.6rem; font-weight: 900; }
         .key-btn.special-blue { color: var(--accent-blue); }
         .key-grid.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
         
-        /* 特殊布局处理 J Q K 居中 */
         .key-row-bottom { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
         .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
+
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     </style>
 </head>
 <body>
@@ -135,9 +144,7 @@
     </div>
 
     <script>
-        // 核心状态机
         let state = { cards: [] };
-
         const DOM = {
             slots: document.getElementById('slots'),
             resultTitle: document.getElementById('resultTitle'),
@@ -146,68 +153,72 @@
             keyboardBottom: document.getElementById('keyboardBottom')
         };
 
-        // 触觉反馈 (Haptic)
         const vibrate = (ms) => { if (navigator.vibrate) navigator.vibrate(ms); };
 
         function addCard(name, value) {
             if (state.cards.length >= 5) return;
-            vibrate(30); // 轻微震动
-            state.cards.push({ name, value, id: Date.now() });
-            render();
-        }
-
-        function removeCard(index) {
-            if (state.cards.length === 5) return; // 结算状态下不允许点卡槽删除，只能点下一局
-            vibrate(20);
-            state.cards.splice(index, 1);
-            render();
-        }
-
-        function resetGame() {
-            vibrate([30, 50]); // 双震动反馈
-            state.cards = [];
-            render();
-        }
-
-        // 核心渲染函数 (State-Driven)
-        function render() {
-            // 1. 渲染卡槽
-            let slotsHTML = '';
-            for (let i = 0; i < 5; i++) {
-                const c = state.cards[i];
-                if (c) {
-                    let colorClass = '';
-                    if (c.name === '3' || c.name === '6') colorClass = 'red';
-                    if (['J', 'Q', 'K'].includes(c.name)) colorClass = 'blue';
-                    slotsHTML += `<div class="slot filled ${colorClass}" onclick="removeCard(${i})">${c.name}</div>`;
-                } else {
-                    slotsHTML += `<div class="slot"></div>`;
-                }
-            }
-            DOM.slots.innerHTML = slotsHTML;
-
-            // 2. 状态分发
+            vibrate(30);
+            state.cards.push({ name, value, id: Date.now() + Math.random() });
+            renderPickingState();
+            
             if (state.cards.length === 5) {
                 DOM.keyboard.classList.add('disabled');
                 DOM.keyboardBottom.style.opacity = '0.5';
                 DOM.keyboardBottom.style.pointerEvents = 'none';
                 calculateAndShow();
-            } else {
-                DOM.keyboard.classList.remove('disabled');
-                DOM.keyboardBottom.style.opacity = '1';
-                DOM.keyboardBottom.style.pointerEvents = 'auto';
-                DOM.resultTitle.className = 'result-title';
-                DOM.resetBtn.classList.remove('show');
             }
         }
 
-        // 算法：生成 3/6 变种
+        function removeCard(index) {
+            if (state.cards.length === 5) return; 
+            vibrate(20);
+            state.cards.splice(index, 1);
+            renderPickingState();
+        }
+
+        function resetGame() {
+            vibrate([30, 50]);
+            state.cards = [];
+            DOM.slots.classList.remove('result-mode'); // 恢复单行
+            DOM.keyboard.classList.remove('disabled');
+            DOM.keyboardBottom.style.opacity = '1';
+            DOM.keyboardBottom.style.pointerEvents = 'auto';
+            DOM.resultTitle.className = 'result-title';
+            DOM.resetBtn.classList.remove('show');
+            renderPickingState();
+        }
+
+        // 生成单张卡牌的 HTML
+        function getCardHTML(c, isClickable = false, index = 0) {
+            let colorClass = '';
+            if (c.name === '3' || c.name === '6') colorClass = 'red';
+            if (['J', 'Q', 'K'].includes(c.name)) colorClass = 'blue';
+            let badge = c.mutated ? `<div class="badge">${c.mutated}</div>` : '';
+            let clickAttr = isClickable ? `onclick="removeCard(${index})"` : '';
+            return `<div class="slot filled ${colorClass}" ${clickAttr}>${c.name}${badge}</div>`;
+        }
+
+        // 选牌时的单行渲染
+        function renderPickingState() {
+            DOM.slots.classList.remove('result-mode');
+            let html = '';
+            for (let i = 0; i < 5; i++) {
+                if (state.cards[i]) {
+                    html += getCardHTML(state.cards[i], true, i);
+                } else {
+                    html += `<div class="slot"></div>`;
+                }
+            }
+            DOM.slots.innerHTML = html;
+        }
+
+        // 算法：生成带有变牌标记的组合
         function getVariations(cards) {
             let variations = [[]];
             for (let card of cards) {
                 let opts = [{ ...card, val: card.value }];
-                if (card.name === '3') opts.push({ ...card, val: 6 });
-                if (card.name === '6') opts.push({ ...card, val: 3 });
+                if (card.name === '3') opts.push({ ...card, val: 6, mutated: '当6' }); // 标记变牌
+                if (card.name === '6') opts.push({ ...card, val: 3, mutated: '当3' });
                 
                 let next = [];
                 for (let v of variations) {
@@ -218,13 +229,14 @@
             return variations;
         }
 
-        // 算法：计算最优解
         function calculateAndShow() {
             const isFiveGong = state.cards.every(c => ['J', 'Q', 'K'].includes(c.name));
-            if (isFiveGong) return showResult("五公 (金牛)", true);
+            if (isFiveGong) {
+                return applyResultView("五公 (金牛)", true, state.cards.slice(3, 5), state.cards.slice(0, 3));
+            }
 
             const allVars = getVariations(state.cards);
-            let best = -1;
+            let bestScore = -1, finalBase = [], finalPoints = [];
 
             for (let v of allVars) {
                 for (let i = 0; i < 3; i++) {
@@ -235,32 +247,53 @@
                                 let pts = v.filter((_, idx) => idx !== i && idx !== j && idx !== k);
                                 let sum2 = (pts[0].val + pts[1].val) % 10;
                                 let score = sum2 === 0 ? 10 : sum2;
-                                if (score > best) best = score;
+                                if (score > bestScore) {
+                                    bestScore = score; finalBase = [v[i], v[j], v[k]]; finalPoints = pts;
+                                }
                             }
                         }
                     }
                 }
             }
 
-            if (best === -1) showResult("无赖 (没牛)", false);
-            else if (best === 10) showResult("牛牛 !!", true);
-            else showResult(`牛 ${best}`, false);
+            if (bestScore === -1) {
+                // 没牛：保留一行展示
+                applyResultView("无赖 (没牛)", false, [], state.cards);
+            } else if (bestScore === 10) {
+                applyResultView("牛牛 !!", true, finalPoints, finalBase);
+            } else {
+                applyResultView(`牛 ${bestScore}`, false, finalPoints, finalBase);
+            }
         }
 
-        // UI：展示结果
-        function showResult(text, isPremium) {
-            vibrate(isPremium ? [50, 50, 100] : 100); // 出结果的震动反馈
+        // UI：触发结果渲染 (上2下3布局)
+        function applyResultView(text, isPremium, topCards, bottomCards) {
+            vibrate(isPremium ? [50, 50, 100] : 100); 
+            
+            // 组装上下两排卡牌
+            if (topCards.length > 0 && bottomCards.length === 3) {
+                DOM.slots.classList.add('result-mode'); // 切换到双行排版
+                DOM.slots.innerHTML = `
+                    <div class="card-row">
+                        ${topCards.map(c => getCardHTML(c, false)).join('')}
+                    </div>
+                    <div class="card-row">
+                        ${bottomCards.map(c => getCardHTML(c, false)).join('')}
+                    </div>
+                `;
+            } else {
+                // 如果没牛，依然排成一行，但是不可点击
+                DOM.slots.classList.remove('result-mode');
+                DOM.slots.innerHTML = bottomCards.map(c => getCardHTML(c, false)).join('');
+            }
+
             DOM.resultTitle.innerText = text;
             DOM.resultTitle.className = `result-title show ${isPremium ? 'gold' : ''}`;
             
-            // 延迟一点显示“下一局”按钮，符合视觉习惯
-            setTimeout(() => {
-                DOM.resetBtn.classList.add('show');
-            }, 300);
+            setTimeout(() => { DOM.resetBtn.classList.add('show'); }, 300);
         }
 
-        // 初始化
-        render();
+        renderPickingState();
     </script>
 </body>
 </html>
