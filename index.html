@@ -2,8 +2,39 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>神算牛牛 - 极速算牌</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- SEO 基础优化 -->
+    <title>神算牛牛 - 极速算牌器 | 牛牛算分网页版</title>
+    <meta name="description" content="最快最好用的网页版神算牛牛算牌器，支持五公（满堂红）、大冬菇等特色规则。点点键盘，瞬间计算出牛几，全端支持，随开随用！">
+    <meta name="keywords" content="牛牛,斗牛,算牌器,牛牛算分,五公,大冬菇,神算牛牛,极速算牌,扑克工具,在线算牌">
+    <meta name="author" content="MagicNiu">
+    <link rel="canonical" href="https://jihong0726.github.io/MagicNiu/" />
+
+    <!-- Open Graph / Facebook (社交分享优化) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jihong0726.github.io/MagicNiu/">
+    <meta property="og:title" content="神算牛牛 - 极速算牌器">
+    <meta property="og:description" content="最快最好用的牛牛算牌器，支持满堂红、大冬菇等特殊牌型，马上体验极速算分！">
+    <meta property="og:image" content="https://jihong0726.github.io/MagicNiu/og-image.jpg">
+    <meta property="og:site_name" content="神算牛牛">
+
+    <!-- Twitter 卡片优化 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://jihong0726.github.io/MagicNiu/">
+    <meta name="twitter:title" content="神算牛牛 - 极速算牌器">
+    <meta name="twitter:description" content="最快最好用的牛牛算牌器，支持满堂红、大冬菇等特殊牌型，马上体验极速算分！">
+    <meta name="twitter:image" content="https://jihong0726.github.io/MagicNiu/og-image.jpg">
+
+    <!-- 苹果与PWA优化 (伪原生体验) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="神算牛牛">
+    
+    <!-- 替换为你实际的 Favicon (如果后续有的话) -->
+    <!-- <link rel="icon" type="image/x-icon" href="./favicon.ico"> -->
+    <!-- <link rel="apple-touch-icon" href="./apple-touch-icon.png"> -->
+
     <style>
         :root {
             --bg-color: #f2f4f8;
@@ -18,9 +49,9 @@
             --shadow-inset: inset 4px 4px 8px #e3e5e8, inset -4px -4px 8px #ffffff;
         }
 
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
-        html { background-color: var(--desktop-bg); display: flex; justify-content: center; align-items: center; height: 100%; }
+        html { background-color: var(--desktop-bg); display: flex; justify-content: center; align-items: center; height: 100%; touch-action: none; }
 
         body {
             margin: 0; width: 100%; max-width: 430px; height: 100dvh; max-height: 900px;
@@ -28,6 +59,7 @@
             padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
             position: relative; overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border-radius: 20px;
+            touch-action: none; overscroll-behavior: none;
         }
 
         @media (max-width: 480px) {
@@ -118,9 +150,47 @@
         
         .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; }
         .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
+
+        /* 大冬菇配置开关 */
+        .config-bar { position: absolute; top: calc(env(safe-area-inset-top, 20px) + 20px); right: 20px; z-index: 10; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-gray); }
+        .toggle-switch { position: relative; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: .3s; border-radius: 24px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .toggle-switch input:checked + .toggle-slider { background-color: var(--accent-red); }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+        /* 模态框 */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-box { background: var(--surface); padding: 25px 20px; border-radius: 24px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .modal-overlay.show .modal-box { transform: translateY(0) scale(1); }
+        .modal-title { font-size: 1.3rem; font-weight: 800; margin: 0 0 10px 0; color: var(--text-primary); }
+        .modal-desc { font-size: 0.95rem; color: var(--text-gray); margin: 0 0 20px 0; line-height: 1.5; }
+        .modal-btn { display: block; width: 100%; padding: 14px; border-radius: 12px; font-size: 1.05rem; font-weight: bold; border: none; cursor: pointer; transition: transform 0.1s; margin-bottom: 10px; }
+        .modal-btn:active { transform: scale(0.96); }
+        .btn-primary { background: linear-gradient(135deg, #1c1e21, #3a3d42); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-secondary { background: #f2f4f8; color: var(--text-gray); margin-bottom: 0; }
     </style>
 </head>
 <body>
+
+    <div class="config-bar">
+        <span>🍄 大冬菇</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="dongGuToggle" checked>
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+
+    <div class="modal-overlay" id="dongGuModal">
+        <div class="modal-box">
+            <h3 class="modal-title">发现可能的冬菇</h3>
+            <p class="modal-desc">这副牌中A和公仔构成了点数牌。请问这张<strong style="color:var(--text-primary);">A</strong>是<strong style="color:var(--text-primary);">♠️ 黑桃A (冬菇)</strong>吗？</p>
+            <button class="modal-btn btn-primary" onclick="confirmDongGu(true)">🍄 是的，它是大冬菇</button>
+            <button class="modal-btn btn-secondary" onclick="confirmDongGu(false)">并不是</button>
+        </div>
+    </div>
 
     <div class="display-board">
         <div class="brand">神算<span>牛牛</span></div>
@@ -152,19 +222,35 @@
     </div>
 
     <script>
-        let state = { cards: [] };
+        let state = { cards: [], tempDongGu: null };
         const DOM = {
             slots: document.getElementById('slots'),
             resultTitle: document.getElementById('resultTitle'),
             resetBtn: document.getElementById('resetBtn'),
             keyboard: document.getElementById('keyboard'),
-            keyboardBottom: document.getElementById('keyboardBottom')
+            keyboardBottom: document.getElementById('keyboardBottom'),
+            dongGuToggle: document.getElementById('dongGuToggle'),
+            dongGuModal: document.getElementById('dongGuModal')
         };
 
         const vibrate = (ms) => { if (navigator.vibrate) navigator.vibrate(ms); };
 
         function addCard(name, value) {
             if (state.cards.length >= 5) return;
+            
+            // 限制每种牌最多只能选4次 (由于现实扑克牌限制)
+            let count = state.cards.filter(c => c.name === name).length;
+            if (count >= 4) {
+                vibrate([20, 20]);
+                let buttons = [...document.querySelectorAll('.key-btn')];
+                let btn = buttons.find(b => b.innerText.trim() === name);
+                if (btn) {
+                    btn.classList.add('anim-shake');
+                    setTimeout(() => btn.classList.remove('anim-shake'), 400);
+                }
+                return;
+            }
+
             vibrate(30);
             
             let uniqueId = Date.now().toString() + Math.floor(Math.random() * 10000);
@@ -174,15 +260,62 @@
                 DOM.keyboard.classList.add('disabled');
                 DOM.keyboardBottom.style.opacity = '0.5';
                 DOM.keyboardBottom.style.pointerEvents = 'none';
-                calculateAndShow();
+                checkDongGuAndCalculate();
             } else {
                 renderPickingState();
+            }
+        }
+
+        function checkDongGuAndCalculate() {
+            const isDongGuEnabled = DOM.dongGuToggle.checked;
+            
+            if (isDongGuEnabled) {
+                state.tempDongGu = null;
+                const allVars = getVariations(state.cards);
+                for (let v of allVars) {
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = i + 1; j < 4; j++) {
+                            for (let k = j + 1; k < 5; k++) {
+                                let sum3 = v[i].val + v[j].val + v[k].val;
+                                if (sum3 % 10 === 0) {
+                                    let pts = v.filter((_, idx) => idx !== i && idx !== j && idx !== k);
+                                    let hasA = pts.some(c => c.name === 'A');
+                                    let hasPic = pts.some(c => ['J', 'Q', 'K'].includes(c.name));
+                                    if (hasA && hasPic) {
+                                        state.tempDongGu = { base: [v[i], v[j], v[k]], points: pts };
+                                        break;
+                                    }
+                                }
+                            }
+                            if (state.tempDongGu) break;
+                        }
+                        if (state.tempDongGu) break;
+                    }
+                    if (state.tempDongGu) break;
+                }
+                
+                if (state.tempDongGu) {
+                    DOM.dongGuModal.classList.add('show');
+                    return;
+                }
+            }
+            
+            calculateAndShow();
+        }
+
+        function confirmDongGu(isDongGu) {
+            DOM.dongGuModal.classList.remove('show');
+            if (isDongGu && state.tempDongGu) {
+                applyResultView("🍄 遇神杀神！大冬菇 🍄", "color-gold", "anim-explode", true, state.tempDongGu.points, state.tempDongGu.base);
+            } else {
+                calculateAndShow();
             }
         }
 
         function removeCard(id) {
             vibrate(20);
             state.cards = state.cards.filter(c => c.id !== id);
+            state.tempDongGu = null;
             
             DOM.slots.classList.remove('result-mode');
             DOM.keyboard.classList.remove('disabled');
@@ -197,6 +330,7 @@
         function resetGame() {
             vibrate([30, 50]);
             state.cards = [];
+            state.tempDongGu = null;
             DOM.slots.classList.remove('result-mode');
             DOM.keyboard.classList.remove('disabled');
             DOM.keyboardBottom.style.opacity = '1';
@@ -321,6 +455,11 @@
         }
 
         renderPickingState();
+        
+        // 禁用双击放大
+        document.addEventListener('dblclick', function(event) {
+            event.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
