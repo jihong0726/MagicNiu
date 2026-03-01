@@ -101,10 +101,23 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; font-weight: 800; color: var(--text-primary);
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
         }
         
         .slot.filled { background: var(--surface); box-shadow: var(--shadow-pop); transform: translateY(-2px); cursor: pointer; }
         .slot.filled:active { transform: scale(0.9); box-shadow: var(--shadow-inset); }
+        
+        /* 删除提示遮罩层 */
+        .slot-del-hint {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 59, 48, 0.85); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; opacity: 0; transition: opacity 0.2s;
+            pointer-events: none; z-index: 5;
+        }
+        .slot.filled.clickable:hover .slot-del-hint, 
+        .slot.filled.clickable:active .slot-del-hint { opacity: 1; }
+
         .slot.red { color: var(--accent-red); }
         .slot.blue { color: var(--accent-blue); }
 
@@ -161,11 +174,10 @@
         .key-btn:active { box-shadow: var(--shadow-inset); transform: scale(0.96); }
         .key-btn.special-red { color: var(--accent-red); font-size: 1.6rem; font-weight: 900; }
         .key-btn.special-blue { color: var(--accent-blue); }
-        .key-btn.btn-del { color: var(--text-gray); font-size: 1.2rem; background: #e3e5e8; }
         .key-grid.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
         
-        .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; max-width: 420px; margin-left: auto; margin-right: auto; }
-        .key-row-bottom .key-btn { width: calc(25% - 9px); aspect-ratio: 1.2; }
+        .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; }
+        .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
 
         /* 大冬菇配置开关 */
         .config-bar { position: absolute; top: calc(env(safe-area-inset-top, 20px) + 20px); right: 20px; z-index: 10; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-gray); }
@@ -236,7 +248,6 @@
             <button class="key-btn special-blue" onclick="addCard('J', 10)">J</button>
             <button class="key-btn special-blue" onclick="addCard('Q', 10)">Q</button>
             <button class="key-btn special-blue" onclick="addCard('K', 10)">K</button>
-            <button class="key-btn btn-del" onclick="deleteLastCard()">⌫</button>
         </div>
     </div>
 
@@ -396,20 +407,15 @@
             renderPickingState();
         }
 
-        function deleteLastCard() {
-            if (state.cards.length === 0) return;
-            vibrate(20);
-            let lastCard = state.cards[state.cards.length - 1];
-            removeCard(lastCard.id);
-        }
-
         function getCardHTML(c, isClickable = false) {
             let colorClass = '';
             if (c.name === '3' || c.name === '6') colorClass = 'red';
             if (['J', 'Q', 'K'].includes(c.name)) colorClass = 'blue';
             let badge = c.mutated ? `<div class="badge">${c.mutated}</div>` : '';
+            let clickClass = isClickable ? 'clickable' : '';
             let clickAttr = isClickable ? `onclick="removeCard('${c.id}')"` : '';
-            return `<div class="slot filled ${colorClass}" ${clickAttr}>${c.name}${badge}</div>`;
+            let hintHTML = isClickable ? `<div class="slot-del-hint">×</div>` : '';
+            return `<div class="slot filled ${colorClass} ${clickClass}" ${clickAttr}>${c.name}${badge}${hintHTML}</div>`;
         }
 
         function renderPickingState() {
