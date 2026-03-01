@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
+    <!-- 强制禁用缓存 (防旧版本) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <!-- SEO 基础优化 -->
     <title>神算牛牛 - 极速算牌器 | 牛牛算分网页版</title>
     <meta name="description" content="最快最好用的网页版神算牛牛算牌器，支持五公（满堂红）、大冬菇等特色规则。点点键盘，瞬间计算出牛几，全端支持，随开随用！">
@@ -156,10 +161,11 @@
         .key-btn:active { box-shadow: var(--shadow-inset); transform: scale(0.96); }
         .key-btn.special-red { color: var(--accent-red); font-size: 1.6rem; font-weight: 900; }
         .key-btn.special-blue { color: var(--accent-blue); }
+        .key-btn.btn-del { color: var(--text-gray); font-size: 1.2rem; background: #e3e5e8; }
         .key-grid.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
         
-        .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; }
-        .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
+        .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; max-width: 420px; margin-left: auto; margin-right: auto; }
+        .key-row-bottom .key-btn { width: calc(25% - 9px); aspect-ratio: 1.2; }
 
         /* 大冬菇配置开关 */
         .config-bar { position: absolute; top: calc(env(safe-area-inset-top, 20px) + 20px); right: 20px; z-index: 10; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-gray); }
@@ -207,6 +213,8 @@
         <div class="slots-container" id="slots"></div>
         <div class="result-area">
             <h2 class="result-title" id="resultTitle">--</h2>
+            <div id="firstStageResult" style="display: none; color: var(--text-gray); font-size: 0.95rem; font-weight: bold; margin-bottom: 8px;"></div>
+            <div id="usageCounter" style="color: var(--text-gray); font-size: 0.8rem; margin: 5px 0;">今日已算: 0 局</div>
             <button class="reset-btn" id="resetBtn" onclick="resetGame()">下一局</button>
         </div>
     </div>
@@ -228,14 +236,17 @@
             <button class="key-btn special-blue" onclick="addCard('J', 10)">J</button>
             <button class="key-btn special-blue" onclick="addCard('Q', 10)">Q</button>
             <button class="key-btn special-blue" onclick="addCard('K', 10)">K</button>
+            <button class="key-btn btn-del" onclick="deleteLastCard()">⌫</button>
         </div>
     </div>
 
     <script>
-        let state = { cards: [], tempDongGu: null };
+        let state = { cards: [], tempDongGu: null, usageCount: 0 };
         const DOM = {
             slots: document.getElementById('slots'),
             resultTitle: document.getElementById('resultTitle'),
+            firstStageResult: document.getElementById('firstStageResult'),
+            usageCounter: document.getElementById('usageCounter'),
             resetBtn: document.getElementById('resetBtn'),
             keyboard: document.getElementById('keyboard'),
             keyboardBottom: document.getElementById('keyboardBottom'),
@@ -266,13 +277,41 @@
             let uniqueId = Date.now().toString() + Math.floor(Math.random() * 10000);
             state.cards.push({ name, value, id: uniqueId });
             
-            if (state.cards.length === 5) {
+            if (state.cards.length === 3) {
+                checkFirstStage();
+                renderPickingState();
+            } else if (state.cards.length === 5) {
                 DOM.keyboard.classList.add('disabled');
                 DOM.keyboardBottom.style.opacity = '0.5';
                 DOM.keyboardBottom.style.pointerEvents = 'none';
+                
+                // Track usage
+                state.usageCount++;
+                DOM.usageCounter.innerText = `今日已算: ${state.usageCount} 局`;
+                
                 checkDongGuAndCalculate();
             } else {
                 renderPickingState();
+            }
+        }
+
+        function checkFirstStage() {
+            let sum = (state.cards[0].value + state.cards[1].value + state.cards[2].value) % 10;
+            let displaySum = sum === 0 ? 10 : sum;
+            
+            const isThreeGong = state.cards.every(c => ['J', 'Q', 'K'].includes(c.name));
+            const isTriple = state.cards[0].name === state.cards[1].name && state.cards[1].name === state.cards[2].name;
+            
+            DOM.firstStageResult.style.display = 'block';
+            if (isTriple) {
+                DOM.firstStageResult.innerText = `前三张：豹子 ${state.cards[0].name} 🎰`;
+                DOM.firstStageResult.style.color = "var(--accent-red)";
+            } else if (isThreeGong) {
+                DOM.firstStageResult.innerText = "前三张：三公 🔥";
+                DOM.firstStageResult.style.color = "var(--accent-red)";
+            } else {
+                DOM.firstStageResult.innerText = `前三张点数：${displaySum}`;
+                DOM.firstStageResult.style.color = "var(--text-gray)";
             }
         }
 
@@ -334,6 +373,12 @@
             DOM.resultTitle.className = 'result-title';
             DOM.resetBtn.classList.remove('show');
             
+            if (state.cards.length < 3) {
+                DOM.firstStageResult.style.display = 'none';
+            } else if (state.cards.length >= 3) {
+                checkFirstStage();
+            }
+            
             renderPickingState();
         }
 
@@ -346,8 +391,16 @@
             DOM.keyboardBottom.style.opacity = '1';
             DOM.keyboardBottom.style.pointerEvents = 'auto';
             DOM.resultTitle.className = 'result-title';
+            DOM.firstStageResult.style.display = 'none';
             DOM.resetBtn.classList.remove('show');
             renderPickingState();
+        }
+
+        function deleteLastCard() {
+            if (state.cards.length === 0) return;
+            vibrate(20);
+            let lastCard = state.cards[state.cards.length - 1];
+            removeCard(lastCard.id);
         }
 
         function getCardHTML(c, isClickable = false) {
@@ -470,6 +523,20 @@
         document.addEventListener('dblclick', function(event) {
             event.preventDefault();
         }, { passive: false });
+
+        // 版本控制与客户端自动刷新缓存机制
+        (function checkVersion() {
+            const currentVersion = "1.0.1"; // 每次发布新版时修改这个字符串，例如 "1.0.2"
+            const localVersion = localStorage.getItem("magicniu_version");
+            
+            if (localVersion !== currentVersion) {
+                localStorage.setItem("magicniu_version", currentVersion);
+                if (localVersion !== null) {
+                    // 如果存在旧版本，则强制清理缓存并刷新
+                    window.location.reload(true);
+                }
+            }
+        })();
     </script>
 </body>
 </html>
