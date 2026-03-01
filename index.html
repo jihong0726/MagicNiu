@@ -4,51 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- 强制禁用缓存 (防旧版本) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- SEO 基础优化 -->
     <title>神算牛牛 - 极速算牌器 | 牛牛算分网页版</title>
     <meta name="description" content="最快最好用的网页版神算牛牛算牌器，支持五公（满堂红）、大冬菇等特色规则。点点键盘，瞬间计算出牛几，全端支持，随开随用！">
     <meta name="keywords" content="牛牛,斗牛,算牌器,牛牛算分,五公,大冬菇,神算牛牛,极速算牌,扑克工具,在线算牌">
     <meta name="author" content="MagicNiu">
-    <meta name="google-site-verification" content="ZdJurBzUDobY3oPhrob1gWjlNjpKSUSaVo3nsD1dRcg" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C12905QCXB"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-C12905QCXB');
-    </script>
-    <link rel="canonical" href="https://jihong0726.github.io/MagicNiu/" />
-
-    <!-- Open Graph / Facebook (社交分享优化) -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jihong0726.github.io/MagicNiu/">
-    <meta property="og:title" content="神算牛牛 - 极速算牌器">
-    <meta property="og:description" content="最快最好用的牛牛算牌器，支持满堂红、大冬菇等特殊牌型，马上体验极速算分！">
-    <meta property="og:image" content="https://jihong0726.github.io/MagicNiu/og-image.jpg">
-    <meta property="og:site_name" content="神算牛牛">
-
-    <!-- Twitter 卡片优化 -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://jihong0726.github.io/MagicNiu/">
-    <meta name="twitter:title" content="神算牛牛 - 极速算牌器">
-    <meta name="twitter:description" content="最快最好用的牛牛算牌器，支持满堂红、大冬菇等特殊牌型，马上体验极速算分！">
-    <meta name="twitter:image" content="https://jihong0726.github.io/MagicNiu/og-image.jpg">
-
-    <!-- 苹果与PWA优化 (伪原生体验) -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="神算牛牛">
-    
-    <!-- 替换为你实际的 Favicon (如果后续有的话) -->
-    <!-- <link rel="icon" type="image/x-icon" href="./favicon.ico"> -->
-    <!-- <link rel="apple-touch-icon" href="./apple-touch-icon.png"> -->
 
     <style>
         :root {
@@ -83,8 +46,13 @@
         }
 
         .display-board { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 10px; }
-        .brand { font-size: 1.5rem; font-weight: 900; color: var(--text-primary); margin-bottom: 15px; letter-spacing: 1px; }
+        .brand { font-size: 1.5rem; font-weight: 900; color: var(--text-primary); margin-bottom: 8px; letter-spacing: 1px; }
         .brand span { color: var(--accent-red); }
+        
+        .instruction-text {
+            font-size: 0.8rem; color: var(--text-gray); background: rgba(0, 0, 0, 0.05);
+            padding: 4px 14px; border-radius: 12px; margin-bottom: 20px; font-weight: 500;
+        }
 
         .slots-container { 
             display: flex; gap: 10px; width: 100%; max-width: 380px; 
@@ -101,45 +69,44 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; font-weight: 800; color: var(--text-primary);
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
+            /* ⚠️ 已经彻底移除了 overflow: hidden; */
         }
         
         .slot.filled { background: var(--surface); box-shadow: var(--shadow-pop); transform: translateY(-2px); cursor: pointer; }
         .slot.filled:active { transform: scale(0.9); box-shadow: var(--shadow-inset); }
-        
-        /* 删除提示遮罩层 */
-        .slot-del-hint {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 59, 48, 0.85); color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; opacity: 0; transition: opacity 0.2s;
-            pointer-events: none; z-index: 5;
-        }
-        .slot.filled.clickable:hover .slot-del-hint, 
-        .slot.filled.clickable:active .slot-del-hint { opacity: 1; }
 
         .slot.red { color: var(--accent-red); }
         .slot.blue { color: var(--accent-blue); }
 
         .badge {
-            position: absolute; top: -8px; right: -8px; background: var(--accent-red); color: white;
+            position: absolute; top: -6px; right: -6px; background: var(--accent-red); color: white;
             font-size: 0.65rem; padding: 2px 6px; border-radius: 8px;
             box-shadow: 0 2px 4px rgba(255, 59, 48, 0.4); animation: fadeUp 0.3s ease 0.2s both;
+            z-index: 10; /* 提升层级，防止被遮挡 */
         }
 
         .result-area { min-height: 85px; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
-        /* 结果文案基础样式 */
         .result-title { font-size: 1.8rem; font-weight: 900; margin: 0; opacity: 0; display: none; text-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .result-title.show { display: block; opacity: 1; }
+        .result-title.show { display: block; opacity: 1; margin-bottom: 10px; }
+
+        /* 新增：前三张点数的胶囊UI样式 */
+        .first-stage-tag {
+            display: inline-block;
+            background: rgba(0,0,0,0.04);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease;
+        }
         
-        /* 颜色分级体系 */
         .color-gray { color: var(--text-gray); }
         .color-normal { color: var(--text-primary); }
         .color-red { color: var(--accent-red); }
         .color-gold { background: var(--accent-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 4px 12px rgba(255,140,0,0.3); font-size: 2.2rem; }
 
-        /* 特效动画分级 */
         .anim-shake { animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
         .anim-pop { animation: popNormal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
         .anim-bounce { animation: bounceStrong 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
@@ -152,7 +119,7 @@
         @keyframes explode { 0% { opacity: 0; transform: scale(0.5); } 60% { opacity: 1; transform: scale(1.2); text-shadow: 0 10px 20px rgba(255,140,0,0.5); } 100% { transform: scale(1); } }
 
         .reset-btn {
-            margin-top: 10px; padding: 10px 28px; border-radius: 20px; background: var(--text-primary); color: white;
+            margin-top: 5px; padding: 10px 28px; border-radius: 20px; background: var(--text-primary); color: white;
             font-weight: bold; font-size: 1rem; opacity: 0; pointer-events: none; transform: translateY(10px);
             transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: none; outline: none; cursor: pointer;
         }
@@ -179,7 +146,6 @@
         .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; }
         .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
 
-        /* 大冬菇配置开关 */
         .config-bar { position: absolute; top: calc(env(safe-area-inset-top, 20px) + 20px); right: 20px; z-index: 10; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-gray); }
         .toggle-switch { position: relative; width: 44px; height: 24px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -188,7 +154,6 @@
         .toggle-switch input:checked + .toggle-slider { background-color: var(--accent-red); }
         .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
 
-        /* 模态框 */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-box { background: var(--surface); padding: 25px 20px; border-radius: 24px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -222,10 +187,12 @@
 
     <div class="display-board">
         <div class="brand">神算<span>牛牛</span></div>
+        <div class="instruction-text">点击键盘选牌 · 点击卡牌退回</div>
+        
         <div class="slots-container" id="slots"></div>
         <div class="result-area">
+            <div id="firstStageResult" style="display: none;"></div>
             <h2 class="result-title" id="resultTitle">--</h2>
-            <div id="firstStageResult" style="display: none; color: var(--text-gray); font-size: 0.95rem; font-weight: bold; margin-bottom: 8px;"></div>
             <div id="usageCounter" style="color: var(--text-gray); font-size: 0.8rem; margin: 5px 0;">今日已算: 0 局</div>
             <button class="reset-btn" id="resetBtn" onclick="resetGame()">下一局</button>
         </div>
@@ -270,7 +237,6 @@
         function addCard(name, value) {
             if (state.cards.length >= 5) return;
             
-            // 限制每种牌最多只能选4次 (由于现实扑克牌限制)
             let count = state.cards.filter(c => c.name === name).length;
             if (count >= 4) {
                 vibrate([20, 20]);
@@ -288,15 +254,17 @@
             let uniqueId = Date.now().toString() + Math.floor(Math.random() * 10000);
             state.cards.push({ name, value, id: uniqueId });
             
-            if (state.cards.length === 3) {
+            if (state.cards.length === 3 || state.cards.length === 4) {
                 checkFirstStage();
                 renderPickingState();
             } else if (state.cards.length === 5) {
+                // 核心修复：选满5张时，立刻隐藏“前三张”提示
+                DOM.firstStageResult.style.display = 'none';
+                
                 DOM.keyboard.classList.add('disabled');
                 DOM.keyboardBottom.style.opacity = '0.5';
                 DOM.keyboardBottom.style.pointerEvents = 'none';
                 
-                // Track usage
                 state.usageCount++;
                 DOM.usageCounter.innerText = `今日已算: ${state.usageCount} 局`;
                 
@@ -310,10 +278,12 @@
             let sum = (state.cards[0].value + state.cards[1].value + state.cards[2].value) % 10;
             let displaySum = sum === 0 ? 10 : sum;
             
-            const isThreeGong = state.cards.every(c => ['J', 'Q', 'K'].includes(c.name));
+            const isThreeGong = state.cards.every((c, index) => index < 3 && ['J', 'Q', 'K'].includes(c.name));
             const isTriple = state.cards[0].name === state.cards[1].name && state.cards[1].name === state.cards[2].name;
             
-            DOM.firstStageResult.style.display = 'block';
+            DOM.firstStageResult.style.display = 'inline-block';
+            DOM.firstStageResult.className = 'first-stage-tag';
+            
             if (isTriple) {
                 DOM.firstStageResult.innerText = `前三张：豹子 ${state.cards[0].name} 🎰`;
                 DOM.firstStageResult.style.color = "var(--accent-red)";
@@ -414,8 +384,7 @@
             let badge = c.mutated ? `<div class="badge">${c.mutated}</div>` : '';
             let clickClass = isClickable ? 'clickable' : '';
             let clickAttr = isClickable ? `onclick="removeCard('${c.id}')"` : '';
-            let hintHTML = isClickable ? `<div class="slot-del-hint">×</div>` : '';
-            return `<div class="slot filled ${colorClass} ${clickClass}" ${clickAttr}>${c.name}${badge}${hintHTML}</div>`;
+            return `<div class="slot filled ${colorClass} ${clickClass}" ${clickAttr}>${c.name}${badge}</div>`;
         }
 
         function renderPickingState() {
@@ -474,7 +443,6 @@
                 }
             }
 
-            // 情绪文案与颜色引擎映射
             if (bestScore === -1) {
                 applyResultView("💸 凉凉！没牛", "color-gray", "anim-shake", false, [], state.cards);
             } else if (bestScore === 10) {
@@ -494,7 +462,6 @@
             }
         }
 
-        // 终极 UI 渲染引擎
         function applyResultView(text, colorClass, animClass, isPremium, topCards, bottomCards) {
             vibrate(isPremium ? [50, 50, 100] : (topCards.length > 0 ? 100 : [30, 30])); 
             
@@ -513,7 +480,6 @@
                 DOM.slots.innerHTML = bottomCards.map(c => getCardHTML(c, true)).join('');
             }
 
-            // 重置 DOM 以确保每次都能触发动画
             DOM.resultTitle.className = `result-title`; 
             void DOM.resultTitle.offsetWidth; 
             
@@ -525,20 +491,18 @@
 
         renderPickingState();
         
-        // 禁用双击放大
         document.addEventListener('dblclick', function(event) {
             event.preventDefault();
         }, { passive: false });
 
-        // 版本控制与客户端自动刷新缓存机制
         (function checkVersion() {
-            const currentVersion = "1.0.1"; // 每次发布新版时修改这个字符串，例如 "1.0.2"
+            // 版本号升级至 1.0.3，触发自动刷新缓存
+            const currentVersion = "1.0.3"; 
             const localVersion = localStorage.getItem("magicniu_version");
             
             if (localVersion !== currentVersion) {
                 localStorage.setItem("magicniu_version", currentVersion);
                 if (localVersion !== null) {
-                    // 如果存在旧版本，则强制清理缓存并刷新
                     window.location.reload(true);
                 }
             }
