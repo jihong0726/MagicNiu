@@ -162,15 +162,18 @@
         .modal-box { background: var(--bg-color); padding: 25px 20px; border-radius: 24px; width: 90%; max-width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 85vh; overflow-y: auto; }
         .modal-overlay.show .modal-box { transform: translateY(0) scale(1); }
         .modal-title { font-size: 1.3rem; font-weight: 800; margin: 0 0 15px 0; color: var(--text-primary); }
-        .modal-btn { display: block; width: 100%; padding: 14px; border-radius: 12px; font-size: 1.05rem; font-weight: bold; border: none; cursor: pointer; transition: transform 0.1s; margin-top: 15px; }
+        .modal-btn { display: block; width: 100%; padding: 14px; border-radius: 12px; font-size: 1.05rem; font-weight: bold; border: none; cursor: pointer; transition: transform 0.1s; }
         .modal-btn:active { transform: scale(0.96); }
         .btn-primary { background: linear-gradient(135deg, #1c1e21, #3a3d42); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-secondary { background: #f2f4f8; color: var(--text-gray); }
 
         .setting-group { background: var(--surface); border-radius: 16px; padding: 12px 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .setting-title { font-size: 0.8rem; font-weight: bold; color: var(--text-gray); text-align: left; margin-bottom: 10px; text-transform: uppercase; }
         .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
         .setting-row:last-child { border-bottom: none; }
         .setting-label { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+        
+        /* 设置框输入优化：原生数字键盘 */
         .setting-input { width: 65px; padding: 6px; border-radius: 8px; border: 2px solid #e2e8f0; text-align: center; font-size: 1rem; font-weight: bold; color: var(--accent-red); background: var(--bg-color); outline: none; transition: border-color 0.2s; }
         .setting-input:focus { border-color: var(--accent-red); }
 
@@ -181,8 +184,7 @@
         .toggle-switch input:checked + .toggle-slider { background-color: var(--accent-green); }
         .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
 
-        /* 打赏卡片专属样式 */
-        .tip-box { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-radius: 16px; padding: 15px; margin-top: 10px; margin-bottom: 5px; text-align: left; border: 1px solid #7dd3fc; }
+        .tip-box { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-radius: 16px; padding: 15px; margin-top: 15px; text-align: left; border: 1px solid #7dd3fc; }
         .tip-text { font-size: 0.85rem; color: #0369a1; margin: 0 0 10px 0; font-weight: 700; line-height: 1.4; }
         .tip-account { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.7); padding: 10px 12px; border-radius: 10px; }
         .tip-info { display: flex; flex-direction: column; }
@@ -191,6 +193,8 @@
         .copy-btn { background: #0284c7; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.2s, transform 0.1s; box-shadow: 0 2px 6px rgba(2,132,199,0.3); }
         .copy-btn:active { transform: scale(0.92); }
         .copy-btn.copied { background: #16a34a; }
+        
+        .modal-actions { display: flex; gap: 10px; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -217,26 +221,29 @@
             </div>
 
             <div class="setting-group">
-                <div class="setting-title">财务与赔率计算</div>
+                <div class="setting-title">赔率设置</div>
                 <div class="setting-row">
-                    <span class="setting-label">💰 默认本金 ($)</span>
-                    <input type="number" class="setting-input" id="inputBaseBet" placeholder="10">
+                    <span class="setting-label">💰 默认本金 (RM)</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="setting-input" id="inputBaseBet" placeholder="10" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
                 </div>
                 <div class="setting-row">
-                    <span class="setting-label">📈 牛7 - 牛9 (倍)</span>
-                    <input type="number" class="setting-input" id="inputMultBig" placeholder="2">
+                    <span class="setting-label">📈 牛1 - 牛9 (倍)</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="setting-input" id="inputMultNormal" placeholder="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
                 </div>
                 <div class="setting-row">
                     <span class="setting-label">🧨 牛牛 (倍)</span>
-                    <input type="number" class="setting-input" id="inputMultNiu" placeholder="3">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="setting-input" id="inputMultNiu" placeholder="3" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
                 </div>
                 <div class="setting-row">
                     <span class="setting-label">👑 对子/五公/冬菇 (倍)</span>
-                    <input type="number" class="setting-input" id="inputMultSpec" placeholder="5">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="setting-input" id="inputMultSpec" placeholder="5" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
                 </div>
             </div>
 
-            <button class="modal-btn btn-primary" onclick="saveSettings()">保存并生效</button>
+            <div class="modal-actions">
+                <button class="modal-btn btn-secondary" style="flex: 1;" onclick="closeSettings()">取消</button>
+                <button class="modal-btn btn-primary" style="flex: 2;" onclick="saveSettings()">保存并生效</button>
+            </div>
 
             <div class="tip-box">
                 <p class="tip-text">☕️ 觉得好用的话，可以发个 TNG 小红包支持一下开发者，祝你过年大杀四方！</p>
@@ -255,8 +262,10 @@
         <div class="modal-box" style="background: var(--surface);">
             <h3 class="modal-title">发现可能的冬菇</h3>
             <p style="font-size: 0.95rem; color: var(--text-gray); margin-bottom: 20px;">请问这张 <strong>A</strong> 是 <strong>♠️ 黑桃A (冬菇)</strong> 吗？</p>
-            <button class="modal-btn btn-primary" onclick="confirmDongGu(true)">🍄 是的，它是大冬菇</button>
-            <button class="modal-btn" style="background: #f2f4f8; color: var(--text-gray);" onclick="confirmDongGu(false)">并不是</button>
+            <div class="modal-actions">
+                <button class="modal-btn btn-secondary" style="flex: 1;" onclick="confirmDongGu(false)">并不是</button>
+                <button class="modal-btn btn-primary" style="flex: 2;" onclick="confirmDongGu(true)">🍄 是的大冬菇</button>
+            </div>
         </div>
     </div>
 
@@ -294,7 +303,7 @@
     </div>
 
     <script>
-        let config = { dongGu: true, pair: true, baseBet: 10, multBig: 2, multNiu: 3, multSpec: 5 };
+        let config = { dongGu: true, pair: true, baseBet: 10, multNormal: 1, multNiu: 3, multSpec: 5 };
         let state = { cards: [], tempDongGu: null, usageCount: 0 };
         
         const DOM = {
@@ -319,24 +328,37 @@
             document.getElementById('dongGuToggle').checked = config.dongGu;
             document.getElementById('pairToggle').checked = config.pair;
             document.getElementById('inputBaseBet').value = config.baseBet;
-            document.getElementById('inputMultBig').value = config.multBig;
+            document.getElementById('inputMultNormal').value = config.multNormal;
             document.getElementById('inputMultNiu').value = config.multNiu;
             document.getElementById('inputMultSpec').value = config.multSpec;
         }
 
         function openSettings() {
             vibrate(20);
+            loadConfig(); 
             DOM.settingsModal.classList.add('show');
+        }
+
+        function closeSettings() {
+            vibrate(20);
+            DOM.settingsModal.classList.remove('show');
         }
 
         function saveSettings() {
             vibrate([20, 30]);
             config.dongGu = document.getElementById('dongGuToggle').checked;
             config.pair = document.getElementById('pairToggle').checked;
-            config.baseBet = Number(document.getElementById('inputBaseBet').value) || 10;
-            config.multBig = Number(document.getElementById('inputMultBig').value) || 2;
-            config.multNiu = Number(document.getElementById('inputMultNiu').value) || 3;
-            config.multSpec = Number(document.getElementById('inputMultSpec').value) || 5;
+            
+            // 优化2：防呆机制，如果输入为空或者为0，还原回默认值
+            let pBet = parseInt(document.getElementById('inputBaseBet').value, 10);
+            let pNorm = parseInt(document.getElementById('inputMultNormal').value, 10);
+            let pNiu = parseInt(document.getElementById('inputMultNiu').value, 10);
+            let pSpec = parseInt(document.getElementById('inputMultSpec').value, 10);
+
+            config.baseBet = isNaN(pBet) || pBet <= 0 ? 10 : pBet;
+            config.multNormal = isNaN(pNorm) || pNorm <= 0 ? 1 : pNorm;
+            config.multNiu = isNaN(pNiu) || pNiu <= 0 ? 3 : pNiu;
+            config.multSpec = isNaN(pSpec) || pSpec <= 0 ? 5 : pSpec;
             
             localStorage.setItem('magicniu_config', JSON.stringify(config));
             DOM.settingsModal.classList.remove('show');
@@ -344,7 +366,6 @@
             if (state.cards.length === 5 && !state.tempDongGu) checkDongGuAndCalculate();
         }
 
-        // TNG 一键复制功能
         function copyTNG() {
             const tngNumber = "0102797247";
             const btn = document.getElementById('copyBtn');
@@ -357,7 +378,6 @@
                     setTimeout(() => { btn.innerText = "复制账号"; btn.classList.remove("copied"); }, 2000);
                 });
             } else {
-                // 兼容低版本浏览器
                 let textArea = document.createElement("textarea");
                 textArea.value = tngNumber;
                 document.body.appendChild(textArea);
@@ -551,7 +571,7 @@
             }
 
             let mult = 1;
-            if (scoreType >= 7 && scoreType <= 9) mult = config.multBig;
+            if (scoreType >= 1 && scoreType <= 9) mult = config.multNormal;
             else if (scoreType === 10) mult = config.multNiu;
             else if (scoreType >= 11) mult = config.multSpec;
 
@@ -563,13 +583,13 @@
 
             DOM.moneyDisplay.className = 'money-tag'; void DOM.moneyDisplay.offsetWidth;
             if (scoreType === -1) {
-                DOM.moneyDisplay.innerText = `📉 牌面本金: $${winAmt} (1倍)`;
+                DOM.moneyDisplay.innerText = `📉 牌面本金: RM${winAmt} (1倍)`;
                 DOM.moneyDisplay.classList.add('show', 'money-lose');
-            } else if (scoreType >= 1 && scoreType <= 6) {
-                DOM.moneyDisplay.innerText = `💵 若赢可得: +$${winAmt} (1倍)`;
+            } else if (scoreType >= 1 && scoreType <= 9) {
+                DOM.moneyDisplay.innerText = `💵 若赢可得: +RM${winAmt} (${mult}倍)`;
                 DOM.moneyDisplay.classList.add('show', 'money-win');
             } else {
-                DOM.moneyDisplay.innerText = `💰 若赢可得: +$${winAmt} (${mult}倍)`;
+                DOM.moneyDisplay.innerText = `💰 若赢可得: +RM${winAmt} (${mult}倍)`;
                 DOM.moneyDisplay.classList.add('show', 'money-gold');
             }
             
@@ -581,7 +601,7 @@
         document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
 
         (function checkVersion() {
-            const currentVersion = "1.0.6"; // 版本号已升级
+            const currentVersion = "1.0.8"; // 版本升级
             const localVersion = localStorage.getItem("magicniu_version");
             if (localVersion !== currentVersion) {
                 localStorage.setItem("magicniu_version", currentVersion);
