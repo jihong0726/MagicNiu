@@ -8,24 +8,21 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>神算牛牛 - 极速算牌器 | 牛牛算分网页版</title>
-    <meta name="description" content="最快最好用的网页版神算牛牛算牌器，支持五公（满堂红）、牛对子、大冬菇等特色规则。">
-    <meta name="keywords" content="牛牛,斗牛,算牌器,牛牛算分,五公,牛对子,神算牛牛">
+    <title>神算牛牛</title>
+    <meta name="description" content="最快最好用的网页版神算牛牛算牌器，支持五公（满堂红）、大冬菇等特色规则。点点键盘，瞬间计算出牛几，全端支持，随开随用！">
+    <meta name="keywords" content="牛牛,斗牛,算牌器,牛牛算分,五公,大冬菇,神算牛牛,极速算牌,扑克工具,在线算牌">
     <meta name="author" content="MagicNiu">
-
-     <meta name="google-site-verification" content="ZdJurBzUDobY3oPhrob1gWjlNjpKSUSaVo3nsD1dRcg" />
-    <!-- Google tag (gtag.js) -->
+    <meta name="google-site-verification" content="ZdJurBzUDobY3oPhrob1gWjlNjpKSUSaVo3nsD1dRcg" />
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-C12905QCXB"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-C12905QCXB');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-C12905QCXB');
     </script>
     <link rel="canonical" href="https://jihong0726.github.io/MagicNiu/" />
 
-    <!-- Open Graph / Facebook (社交分享优化) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://jihong0726.github.io/MagicNiu/">
     <meta property="og:title" content="神算牛牛 - 极速算牌器">
@@ -33,14 +30,12 @@
     <meta property="og:image" content="https://jihong0726.github.io/MagicNiu/og-image.jpg">
     <meta property="og:site_name" content="神算牛牛">
 
-    <!-- Twitter 卡片优化 -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://jihong0726.github.io/MagicNiu/">
     <meta name="twitter:title" content="神算牛牛 - 极速算牌器">
     <meta name="twitter:description" content="最快最好用的牛牛算牌器，支持满堂红、大冬菇等特殊牌型，马上体验极速算分！">
     <meta name="twitter:image" content="https://jihong0726.github.io/MagicNiu/og-image.jpg">
 
-    <!-- 苹果与PWA优化 (伪原生体验) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="神算牛牛">
@@ -54,6 +49,7 @@
             --text-gray: #8a8d91;
             --accent-red: #ff3b30;
             --accent-blue: #007aff;
+            --accent-green: #34c759;
             --accent-gold: linear-gradient(135deg, #ffd700, #ff8c00);
             --shadow-pop: 6px 6px 12px #e3e5e8, -6px -6px 12px #ffffff;
             --shadow-inset: inset 4px 4px 8px #e3e5e8, inset -4px -4px 8px #ffffff;
@@ -77,22 +73,17 @@
             body { max-width: 100%; max-height: none; box-shadow: none; border-radius: 0; }
         }
 
+        .top-bar { display: flex; justify-content: space-between; align-items: flex-start; padding: 0 20px; margin-bottom: 10px; }
+        .instruction-text { font-size: 0.75rem; color: var(--text-gray); background: rgba(0, 0, 0, 0.05); padding: 5px 12px; border-radius: 12px; font-weight: 600; }
+        .settings-btn { background: var(--surface); color: var(--text-primary); border: none; padding: 6px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; box-shadow: var(--shadow-pop); cursor: pointer; transition: transform 0.1s; }
+        .settings-btn:active { transform: scale(0.9); box-shadow: var(--shadow-inset); }
+
         .display-board { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 10px; }
-        .brand { font-size: 1.5rem; font-weight: 900; color: var(--text-primary); margin-bottom: 8px; letter-spacing: 1px; }
+        .brand { font-size: 1.5rem; font-weight: 900; color: var(--text-primary); margin-bottom: 15px; letter-spacing: 1px; }
         .brand span { color: var(--accent-red); }
         
-        .instruction-text {
-            font-size: 0.8rem; color: var(--text-gray); background: rgba(0, 0, 0, 0.05);
-            padding: 4px 14px; border-radius: 12px; margin-bottom: 20px; font-weight: 500;
-        }
-
-        .slots-container { 
-            display: flex; gap: 10px; width: 100%; max-width: 380px; 
-            justify-content: center; align-items: center; margin-bottom: 20px;
-            min-height: 190px; transition: all 0.3s ease;
-        }
+        .slots-container { display: flex; gap: 10px; width: 100%; max-width: 380px; justify-content: center; align-items: center; margin-bottom: 15px; min-height: 190px; transition: all 0.3s ease; }
         .slots-container.result-mode { flex-direction: column; gap: 15px; }
-        
         .card-row { display: flex; gap: 10px; justify-content: center; animation: fadeUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
         .slot {
@@ -102,7 +93,6 @@
             font-size: 1.5rem; font-weight: 800; color: var(--text-primary);
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        
         .slot.filled { background: var(--surface); box-shadow: var(--shadow-pop); transform: translateY(-2px); cursor: pointer; }
         .slot.filled:active { transform: scale(0.9); box-shadow: var(--shadow-inset); }
         .slot.red { color: var(--accent-red); }
@@ -114,16 +104,18 @@
             box-shadow: 0 2px 4px rgba(255, 59, 48, 0.4); animation: fadeUp 0.3s ease 0.2s both; z-index: 10;
         }
 
-        .result-area { min-height: 85px; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        
+        .result-area { min-height: 100px; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .result-title { font-size: 1.8rem; font-weight: 900; margin: 0; opacity: 0; display: none; text-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .result-title.show { display: block; opacity: 1; margin-bottom: 10px; }
+        .result-title.show { display: block; opacity: 1; margin-bottom: 6px; }
 
-        .first-stage-tag {
-            display: inline-block; background: rgba(0,0,0,0.04); padding: 4px 12px;
-            border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; animation: fadeUp 0.3s ease;
-        }
+        .first-stage-tag { display: inline-block; background: rgba(0,0,0,0.04); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; animation: fadeUp 0.3s ease; }
         
+        .money-tag { display: none; font-size: 0.9rem; font-weight: 800; padding: 5px 14px; border-radius: 12px; margin-bottom: 10px; animation: fadeUp 0.4s ease 0.1s both; }
+        .money-tag.show { display: inline-block; }
+        .money-win { background: rgba(52, 199, 89, 0.1); color: var(--accent-green); border: 1px solid rgba(52, 199, 89, 0.3); }
+        .money-lose { background: rgba(138, 141, 145, 0.1); color: var(--text-gray); border: 1px solid rgba(138, 141, 145, 0.3); }
+        .money-gold { background: rgba(255, 140, 0, 0.1); color: #ff8c00; border: 1px solid rgba(255, 140, 0, 0.4); }
+
         .color-gray { color: var(--text-gray); }
         .color-normal { color: var(--text-primary); }
         .color-red { color: var(--accent-red); }
@@ -141,7 +133,7 @@
         @keyframes explode { 0% { opacity: 0; transform: scale(0.5); } 60% { opacity: 1; transform: scale(1.2); text-shadow: 0 10px 20px rgba(255,140,0,0.5); } 100% { transform: scale(1); } }
 
         .reset-btn {
-            margin-top: 5px; padding: 10px 28px; border-radius: 20px; background: var(--text-primary); color: white;
+            margin-top: 2px; padding: 10px 28px; border-radius: 20px; background: var(--text-primary); color: white;
             font-weight: bold; font-size: 1rem; opacity: 0; pointer-events: none; transform: translateY(10px);
             transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: none; outline: none; cursor: pointer;
         }
@@ -152,9 +144,7 @@
             background: var(--surface); border-radius: 24px 24px 0 0; padding: 25px 15px calc(20px + env(safe-area-inset-bottom));
             box-shadow: 0 -10px 30px rgba(0,0,0,0.03); margin: 0 -20px; flex-shrink: 0;
         }
-        
         .key-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; max-width: 420px; margin: 0 auto; }
-        
         .key-btn {
             aspect-ratio: 1; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-pop);
             display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; color: var(--text-primary);
@@ -164,69 +154,120 @@
         .key-btn.special-red { color: var(--accent-red); font-size: 1.6rem; font-weight: 900; }
         .key-btn.special-blue { color: var(--accent-blue); }
         .key-grid.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
-        
         .key-row-bottom { display: flex; justify-content: center; align-items: flex-start; gap: 12px; margin-top: 12px; }
         .key-row-bottom .key-btn { width: calc(20% - 10px); aspect-ratio: 1; }
 
-        /* 新增：右上角设置区（垂直排列双开关） */
-        .config-bar { position: absolute; top: calc(env(safe-area-inset-top, 20px) + 20px); right: 20px; z-index: 10; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-        .config-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-gray); }
-        
-        .toggle-switch { position: relative; width: 44px; height: 24px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: .3s; border-radius: 24px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .toggle-switch input:checked + .toggle-slider { background-color: var(--accent-red); }
-        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .modal-box { background: var(--surface); padding: 25px 20px; border-radius: 24px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .modal-box { background: var(--bg-color); padding: 25px 20px; border-radius: 24px; width: 90%; max-width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 85vh; overflow-y: auto; }
         .modal-overlay.show .modal-box { transform: translateY(0) scale(1); }
-        .modal-title { font-size: 1.3rem; font-weight: 800; margin: 0 0 10px 0; color: var(--text-primary); }
-        .modal-desc { font-size: 0.95rem; color: var(--text-gray); margin: 0 0 20px 0; line-height: 1.5; }
-        .modal-btn { display: block; width: 100%; padding: 14px; border-radius: 12px; font-size: 1.05rem; font-weight: bold; border: none; cursor: pointer; transition: transform 0.1s; margin-bottom: 10px; }
+        .modal-title { font-size: 1.3rem; font-weight: 800; margin: 0 0 15px 0; color: var(--text-primary); }
+        .modal-btn { display: block; width: 100%; padding: 14px; border-radius: 12px; font-size: 1.05rem; font-weight: bold; border: none; cursor: pointer; transition: transform 0.1s; margin-top: 15px; }
         .modal-btn:active { transform: scale(0.96); }
         .btn-primary { background: linear-gradient(135deg, #1c1e21, #3a3d42); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .btn-secondary { background: #f2f4f8; color: var(--text-gray); margin-bottom: 0; }
+
+        .setting-group { background: var(--surface); border-radius: 16px; padding: 12px 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .setting-title { font-size: 0.8rem; font-weight: bold; color: var(--text-gray); text-align: left; margin-bottom: 10px; text-transform: uppercase; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-label { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+        .setting-input { width: 65px; padding: 6px; border-radius: 8px; border: 2px solid #e2e8f0; text-align: center; font-size: 1rem; font-weight: bold; color: var(--accent-red); background: var(--bg-color); outline: none; transition: border-color 0.2s; }
+        .setting-input:focus { border-color: var(--accent-red); }
+
+        .toggle-switch { position: relative; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: .3s; border-radius: 24px; }
+        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .toggle-switch input:checked + .toggle-slider { background-color: var(--accent-green); }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+        /* 打赏卡片专属样式 */
+        .tip-box { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-radius: 16px; padding: 15px; margin-top: 10px; margin-bottom: 5px; text-align: left; border: 1px solid #7dd3fc; }
+        .tip-text { font-size: 0.85rem; color: #0369a1; margin: 0 0 10px 0; font-weight: 700; line-height: 1.4; }
+        .tip-account { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.7); padding: 10px 12px; border-radius: 10px; }
+        .tip-info { display: flex; flex-direction: column; }
+        .tip-number { font-size: 1.05rem; font-weight: 900; color: #0c4a6e; letter-spacing: 0.5px; }
+        .tip-name { font-size: 0.75rem; color: #0284c7; font-weight: bold; margin-top: 2px; }
+        .copy-btn { background: #0284c7; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.2s, transform 0.1s; box-shadow: 0 2px 6px rgba(2,132,199,0.3); }
+        .copy-btn:active { transform: scale(0.92); }
+        .copy-btn.copied { background: #16a34a; }
     </style>
 </head>
 <body>
 
-    <div class="config-bar">
-        <div class="config-item">
-            <span>🍄 冬菇</span>
-            <label class="toggle-switch">
-                <input type="checkbox" id="dongGuToggle" checked>
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-        <div class="config-item">
-            <span>👯‍♀️ 对子</span>
-            <label class="toggle-switch">
-                <input type="checkbox" id="pairToggle" checked>
-                <span class="toggle-slider"></span>
-            </label>
+    <div class="top-bar">
+        <div class="instruction-text">点击选牌 · 再点退回</div>
+        <button class="settings-btn" onclick="openSettings()">⚙️ 设置</button>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <h3 class="modal-title">⚙️ 游戏设置</h3>
+            
+            <div class="setting-group">
+                <div class="setting-title">特殊规则开关</div>
+                <div class="setting-row">
+                    <span class="setting-label">🍄 大冬菇特判</span>
+                    <label class="toggle-switch"><input type="checkbox" id="dongGuToggle"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">👯‍♀️ 牛对子 (大过牛牛)</span>
+                    <label class="toggle-switch"><input type="checkbox" id="pairToggle"><span class="toggle-slider"></span></label>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-title">财务与赔率计算</div>
+                <div class="setting-row">
+                    <span class="setting-label">💰 默认本金 ($)</span>
+                    <input type="number" class="setting-input" id="inputBaseBet" placeholder="10">
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">📈 牛7 - 牛9 (倍)</span>
+                    <input type="number" class="setting-input" id="inputMultBig" placeholder="2">
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">🧨 牛牛 (倍)</span>
+                    <input type="number" class="setting-input" id="inputMultNiu" placeholder="3">
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">👑 对子/五公/冬菇 (倍)</span>
+                    <input type="number" class="setting-input" id="inputMultSpec" placeholder="5">
+                </div>
+            </div>
+
+            <button class="modal-btn btn-primary" onclick="saveSettings()">保存并生效</button>
+
+            <div class="tip-box">
+                <p class="tip-text">☕️ 觉得好用的话，可以发个 TNG 小红包支持一下开发者，祝你过年大杀四方！</p>
+                <div class="tip-account">
+                    <div class="tip-info">
+                        <span class="tip-number" id="tngNumber">0102797247</span>
+                        <span class="tip-name">KONG JI HONG</span>
+                    </div>
+                    <button class="copy-btn" id="copyBtn" onclick="copyTNG()">复制账号</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="dongGuModal">
-        <div class="modal-box">
+        <div class="modal-box" style="background: var(--surface);">
             <h3 class="modal-title">发现可能的冬菇</h3>
-            <p class="modal-desc">这副牌中A和公仔构成了点数牌。请问这张<strong style="color:var(--text-primary);">A</strong>是<strong style="color:var(--text-primary);">♠️ 黑桃A (冬菇)</strong>吗？</p>
+            <p style="font-size: 0.95rem; color: var(--text-gray); margin-bottom: 20px;">请问这张 <strong>A</strong> 是 <strong>♠️ 黑桃A (冬菇)</strong> 吗？</p>
             <button class="modal-btn btn-primary" onclick="confirmDongGu(true)">🍄 是的，它是大冬菇</button>
-            <button class="modal-btn btn-secondary" onclick="confirmDongGu(false)">并不是</button>
+            <button class="modal-btn" style="background: #f2f4f8; color: var(--text-gray);" onclick="confirmDongGu(false)">并不是</button>
         </div>
     </div>
 
     <div class="display-board">
         <div class="brand">神算<span>牛牛</span></div>
-        <div class="instruction-text">点击键盘选牌 · 点击卡牌退回</div>
-        
         <div class="slots-container" id="slots"></div>
+        
         <div class="result-area">
             <div id="firstStageResult" style="display: none;"></div>
             <h2 class="result-title" id="resultTitle">--</h2>
+            <div id="moneyDisplay" class="money-tag">--</div>
             <div id="usageCounter" style="color: var(--text-gray); font-size: 0.8rem; margin: 5px 0;">今日已算: 0 局</div>
             <button class="reset-btn" id="resetBtn" onclick="resetGame()">下一局</button>
         </div>
@@ -253,21 +294,82 @@
     </div>
 
     <script>
+        let config = { dongGu: true, pair: true, baseBet: 10, multBig: 2, multNiu: 3, multSpec: 5 };
         let state = { cards: [], tempDongGu: null, usageCount: 0 };
+        
         const DOM = {
             slots: document.getElementById('slots'),
             resultTitle: document.getElementById('resultTitle'),
+            moneyDisplay: document.getElementById('moneyDisplay'),
             firstStageResult: document.getElementById('firstStageResult'),
             usageCounter: document.getElementById('usageCounter'),
             resetBtn: document.getElementById('resetBtn'),
             keyboard: document.getElementById('keyboard'),
             keyboardBottom: document.getElementById('keyboardBottom'),
-            dongGuToggle: document.getElementById('dongGuToggle'),
-            pairToggle: document.getElementById('pairToggle'), // 新增对子开关
+            settingsModal: document.getElementById('settingsModal'),
             dongGuModal: document.getElementById('dongGuModal')
         };
 
         const vibrate = (ms) => { if (navigator.vibrate) navigator.vibrate(ms); };
+
+        function loadConfig() {
+            let saved = localStorage.getItem('magicniu_config');
+            if(saved) config = { ...config, ...JSON.parse(saved) };
+            
+            document.getElementById('dongGuToggle').checked = config.dongGu;
+            document.getElementById('pairToggle').checked = config.pair;
+            document.getElementById('inputBaseBet').value = config.baseBet;
+            document.getElementById('inputMultBig').value = config.multBig;
+            document.getElementById('inputMultNiu').value = config.multNiu;
+            document.getElementById('inputMultSpec').value = config.multSpec;
+        }
+
+        function openSettings() {
+            vibrate(20);
+            DOM.settingsModal.classList.add('show');
+        }
+
+        function saveSettings() {
+            vibrate([20, 30]);
+            config.dongGu = document.getElementById('dongGuToggle').checked;
+            config.pair = document.getElementById('pairToggle').checked;
+            config.baseBet = Number(document.getElementById('inputBaseBet').value) || 10;
+            config.multBig = Number(document.getElementById('inputMultBig').value) || 2;
+            config.multNiu = Number(document.getElementById('inputMultNiu').value) || 3;
+            config.multSpec = Number(document.getElementById('inputMultSpec').value) || 5;
+            
+            localStorage.setItem('magicniu_config', JSON.stringify(config));
+            DOM.settingsModal.classList.remove('show');
+            
+            if (state.cards.length === 5 && !state.tempDongGu) checkDongGuAndCalculate();
+        }
+
+        // TNG 一键复制功能
+        function copyTNG() {
+            const tngNumber = "0102797247";
+            const btn = document.getElementById('copyBtn');
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(tngNumber).then(() => {
+                    vibrate(30);
+                    btn.innerText = "已复制!";
+                    btn.classList.add("copied");
+                    setTimeout(() => { btn.innerText = "复制账号"; btn.classList.remove("copied"); }, 2000);
+                });
+            } else {
+                // 兼容低版本浏览器
+                let textArea = document.createElement("textarea");
+                textArea.value = tngNumber;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("Copy");
+                textArea.remove();
+                vibrate(30);
+                btn.innerText = "已复制!";
+                btn.classList.add("copied");
+                setTimeout(() => { btn.innerText = "复制账号"; btn.classList.remove("copied"); }, 2000);
+            }
+        }
 
         function addCard(name, value) {
             if (state.cards.length >= 5) return;
@@ -277,21 +379,16 @@
                 vibrate([20, 20]);
                 let buttons = [...document.querySelectorAll('.key-btn')];
                 let btn = buttons.find(b => b.innerText.trim() === name);
-                if (btn) {
-                    btn.classList.add('anim-shake');
-                    setTimeout(() => btn.classList.remove('anim-shake'), 400);
-                }
+                if (btn) { btn.classList.add('anim-shake'); setTimeout(() => btn.classList.remove('anim-shake'), 400); }
                 return;
             }
 
             vibrate(30);
-            
             let uniqueId = Date.now().toString() + Math.floor(Math.random() * 10000);
             state.cards.push({ name, value, id: uniqueId });
             
             if (state.cards.length === 3 || state.cards.length === 4) {
-                checkFirstStage();
-                renderPickingState();
+                checkFirstStage(); renderPickingState();
             } else if (state.cards.length === 5) {
                 DOM.firstStageResult.style.display = 'none';
                 DOM.keyboard.classList.add('disabled');
@@ -300,78 +397,9 @@
                 
                 state.usageCount++;
                 DOM.usageCounter.innerText = `今日已算: ${state.usageCount} 局`;
-                
                 checkDongGuAndCalculate();
             } else {
                 renderPickingState();
-            }
-        }
-
-        function checkFirstStage() {
-            let sum = (state.cards[0].value + state.cards[1].value + state.cards[2].value) % 10;
-            let displaySum = sum === 0 ? 10 : sum;
-            
-            const isThreeGong = state.cards.every((c, index) => index < 3 && ['J', 'Q', 'K'].includes(c.name));
-            const isTriple = state.cards[0].name === state.cards[1].name && state.cards[1].name === state.cards[2].name;
-            
-            DOM.firstStageResult.style.display = 'inline-block';
-            DOM.firstStageResult.className = 'first-stage-tag';
-            
-            if (isTriple) {
-                DOM.firstStageResult.innerText = `前三张：豹子 ${state.cards[0].name} 🎰`;
-                DOM.firstStageResult.style.color = "var(--accent-red)";
-            } else if (isThreeGong) {
-                DOM.firstStageResult.innerText = "前三张：三公 🔥";
-                DOM.firstStageResult.style.color = "var(--accent-red)";
-            } else {
-                DOM.firstStageResult.innerText = `前三张点数：${displaySum}`;
-                DOM.firstStageResult.style.color = "var(--text-gray)";
-            }
-        }
-
-        function checkDongGuAndCalculate() {
-            const isDongGuEnabled = DOM.dongGuToggle.checked;
-            
-            if (isDongGuEnabled) {
-                state.tempDongGu = null;
-                const allVars = getVariations(state.cards);
-                for (let v of allVars) {
-                    for (let i = 0; i < 3; i++) {
-                        for (let j = i + 1; j < 4; j++) {
-                            for (let k = j + 1; k < 5; k++) {
-                                let sum3 = v[i].val + v[j].val + v[k].val;
-                                if (sum3 % 10 === 0) {
-                                    let pts = v.filter((_, idx) => idx !== i && idx !== j && idx !== k);
-                                    let hasA = pts.some(c => c.name === 'A');
-                                    let hasPic = pts.some(c => ['J', 'Q', 'K'].includes(c.name));
-                                    if (hasA && hasPic) {
-                                        state.tempDongGu = { base: [v[i], v[j], v[k]], points: pts };
-                                        break;
-                                    }
-                                }
-                            }
-                            if (state.tempDongGu) break;
-                        }
-                        if (state.tempDongGu) break;
-                    }
-                    if (state.tempDongGu) break;
-                }
-                
-                if (state.tempDongGu) {
-                    DOM.dongGuModal.classList.add('show');
-                    return;
-                }
-            }
-            
-            calculateAndShow();
-        }
-
-        function confirmDongGu(isDongGu) {
-            DOM.dongGuModal.classList.remove('show');
-            if (isDongGu && state.tempDongGu) {
-                applyResultView("🍄 遇神杀神！大冬菇 🍄", "color-gold", "anim-explode", true, state.tempDongGu.points, state.tempDongGu.base);
-            } else {
-                calculateAndShow();
             }
         }
 
@@ -385,35 +413,44 @@
             DOM.keyboardBottom.style.opacity = '1';
             DOM.keyboardBottom.style.pointerEvents = 'auto';
             DOM.resultTitle.className = 'result-title';
+            DOM.moneyDisplay.classList.remove('show');
             DOM.resetBtn.classList.remove('show');
             
-            if (state.cards.length < 3) {
-                DOM.firstStageResult.style.display = 'none';
-            } else if (state.cards.length >= 3) {
-                checkFirstStage();
-            }
-            
+            if (state.cards.length < 3) DOM.firstStageResult.style.display = 'none';
+            else checkFirstStage();
             renderPickingState();
         }
 
         function resetGame() {
             vibrate([30, 50]);
-            state.cards = [];
-            state.tempDongGu = null;
+            state.cards = []; state.tempDongGu = null;
             DOM.slots.classList.remove('result-mode');
             DOM.keyboard.classList.remove('disabled');
             DOM.keyboardBottom.style.opacity = '1';
             DOM.keyboardBottom.style.pointerEvents = 'auto';
             DOM.resultTitle.className = 'result-title';
+            DOM.moneyDisplay.classList.remove('show');
             DOM.firstStageResult.style.display = 'none';
             DOM.resetBtn.classList.remove('show');
             renderPickingState();
         }
 
+        function checkFirstStage() {
+            let sum = (state.cards[0].value + state.cards[1].value + state.cards[2].value) % 10;
+            let displaySum = sum === 0 ? 10 : sum;
+            const isThreeGong = state.cards.every((c, index) => index < 3 && ['J', 'Q', 'K'].includes(c.name));
+            const isTriple = state.cards[0].name === state.cards[1].name && state.cards[1].name === state.cards[2].name;
+            
+            DOM.firstStageResult.style.display = 'inline-block';
+            DOM.firstStageResult.className = 'first-stage-tag';
+            
+            if (isTriple) { DOM.firstStageResult.innerText = `前三张：豹子 ${state.cards[0].name} 🎰`; DOM.firstStageResult.style.color = "var(--accent-red)"; }
+            else if (isThreeGong) { DOM.firstStageResult.innerText = "前三张：三公 🔥"; DOM.firstStageResult.style.color = "var(--accent-red)"; }
+            else { DOM.firstStageResult.innerText = `前三张点数：${displaySum}`; DOM.firstStageResult.style.color = "var(--text-gray)"; }
+        }
+
         function getCardHTML(c, isClickable = false) {
-            let colorClass = '';
-            if (c.name === '3' || c.name === '6') colorClass = 'red';
-            if (['J', 'Q', 'K'].includes(c.name)) colorClass = 'blue';
+            let colorClass = (c.name === '3' || c.name === '6') ? 'red' : (['J', 'Q', 'K'].includes(c.name) ? 'blue' : '');
             let badge = c.mutated ? `<div class="badge">${c.mutated}</div>` : '';
             let clickClass = isClickable ? 'clickable' : '';
             let clickAttr = isClickable ? `onclick="removeCard('${c.id}')"` : '';
@@ -422,15 +459,7 @@
 
         function renderPickingState() {
             DOM.slots.classList.remove('result-mode');
-            let html = '';
-            for (let i = 0; i < 5; i++) {
-                if (state.cards[i]) {
-                    html += getCardHTML(state.cards[i], true);
-                } else {
-                    html += `<div class="slot"></div>`;
-                }
-            }
-            DOM.slots.innerHTML = html;
+            DOM.slots.innerHTML = Array(5).fill(0).map((_, i) => state.cards[i] ? getCardHTML(state.cards[i], true) : `<div class="slot"></div>`).join('');
         }
 
         function getVariations(cards) {
@@ -439,23 +468,49 @@
                 let opts = [{ ...card, val: card.value }];
                 if (card.name === '3') opts.push({ ...card, val: 6, mutated: '当6' });
                 if (card.name === '6') opts.push({ ...card, val: 3, mutated: '当3' });
-                
                 let next = [];
-                for (let v of variations) {
-                    for (let o of opts) next.push([...v, o]);
-                }
+                for (let v of variations) for (let o of opts) next.push([...v, o]);
                 variations = next;
             }
             return variations;
         }
 
+        function checkDongGuAndCalculate() {
+            if (config.dongGu) {
+                state.tempDongGu = null;
+                const allVars = getVariations(state.cards);
+                for (let v of allVars) {
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = i + 1; j < 4; j++) {
+                            for (let k = j + 1; k < 5; k++) {
+                                if ((v[i].val + v[j].val + v[k].val) % 10 === 0) {
+                                    let pts = v.filter((_, idx) => idx !== i && idx !== j && idx !== k);
+                                    if (pts.some(c => c.name === 'A') && pts.some(c => ['J', 'Q', 'K'].includes(c.name))) {
+                                        state.tempDongGu = { base: [v[i], v[j], v[k]], points: pts };
+                                        DOM.dongGuModal.classList.add('show');
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            calculateAndShow();
+        }
+
+        function confirmDongGu(isDongGu) {
+            DOM.dongGuModal.classList.remove('show');
+            if (isDongGu && state.tempDongGu) {
+                applyResultView("🍄 遇神杀神！大冬菇 🍄", "color-gold", "anim-explode", true, state.tempDongGu.points, state.tempDongGu.base, 13);
+            } else { calculateAndShow(); }
+        }
+
         function calculateAndShow() {
-            const isFiveGong = state.cards.every(c => ['J', 'Q', 'K'].includes(c.name));
-            if (isFiveGong) {
-                return applyResultView("👑 满堂红！金牛 (五公) 👑", "color-gold", "anim-explode", true, state.cards.slice(3, 5), state.cards.slice(0, 3));
+            if (state.cards.every(c => ['J', 'Q', 'K'].includes(c.name))) {
+                return applyResultView("👑 满堂红！金牛 (五公) 👑", "color-gold", "anim-explode", true, state.cards.slice(3, 5), state.cards.slice(0, 3), 12);
             }
 
-            const isPairEnabled = DOM.pairToggle.checked; // 获取是否开启对子玩法
             const allVars = getVariations(state.cards);
             let bestScore = -1, finalBase = [], finalPoints = [];
 
@@ -463,90 +518,74 @@
                 for (let i = 0; i < 3; i++) {
                     for (let j = i + 1; j < 4; j++) {
                         for (let k = j + 1; k < 5; k++) {
-                            let sum3 = v[i].val + v[j].val + v[k].val;
-                            if (sum3 % 10 === 0) {
+                            if ((v[i].val + v[j].val + v[k].val) % 10 === 0) {
                                 let pts = v.filter((_, idx) => idx !== i && idx !== j && idx !== k);
-                                let sum2 = (pts[0].val + pts[1].val) % 10;
-                                let score = sum2 === 0 ? 10 : sum2;
-
-                                // 【核心规则插入】：判断原生牌名是否一致
-                                if (isPairEnabled && pts[0].name === pts[1].name) {
-                                    score = 11; // 11 分代表牛对子，大过所有普通牛和牛牛
-                                }
-
-                                if (score > bestScore) {
-                                    bestScore = score; finalBase = [v[i], v[j], v[k]]; finalPoints = pts;
-                                }
+                                let score = (pts[0].val + pts[1].val) % 10 === 0 ? 10 : (pts[0].val + pts[1].val) % 10;
+                                
+                                if (config.pair && pts[0].name === pts[1].name) score = 11;
+                                if (score > bestScore) { bestScore = score; finalBase = [v[i], v[j], v[k]]; finalPoints = pts; }
                             }
                         }
                     }
                 }
             }
 
-            // UI 渲染判断
-            if (bestScore === -1) {
-                applyResultView("💸 凉凉！没牛", "color-gray", "anim-shake", false, [], state.cards);
-            } else if (bestScore === 11) {
-                applyResultView("👯‍♀️ 绝杀！牛对子 👯‍♀️", "color-gold", "anim-explode", true, finalPoints, finalBase);
-            } else if (bestScore === 10) {
-                applyResultView("🧨 霸气通杀！牛牛 🧨", "color-gold", "anim-explode", true, finalPoints, finalBase);
-            } else {
-                const textMap = {
-                    1: "🤏 险过剃头！牛 1", 2: "🐢 顶住啊！牛 2", 3: "🥺 勉强及格！牛 3",
-                    4: "🛡️ 防守牌！牛 4", 5: "🤔 有得拼！牛 5", 6: "💪 坐和望赢！牛 6",
-                    7: "🤩 漂亮起飞！牛 7", 8: "💰 准备收钱！牛 8", 9: "🚀 赢到笑！牛 9"
-                };
-                let text = textMap[bestScore];
-                let colorCls = bestScore <= 6 ? "color-normal" : "color-red";
-                let animCls = bestScore <= 6 ? "anim-pop" : "anim-bounce";
-                
-                applyResultView(text, colorCls, animCls, false, finalPoints, finalBase);
+            if (bestScore === -1) applyResultView("💸 凉凉！没牛", "color-gray", "anim-shake", false, [], state.cards, -1);
+            else if (bestScore === 11) applyResultView("👯‍♀️ 绝杀！牛对子 👯‍♀️", "color-gold", "anim-explode", true, finalPoints, finalBase, 11);
+            else if (bestScore === 10) applyResultView("🧨 霸气通杀！牛牛 🧨", "color-gold", "anim-explode", true, finalPoints, finalBase, 10);
+            else {
+                const textMap = { 1: "🤏 险过剃头！牛 1", 2: "🐢 顶住啊！牛 2", 3: "🥺 勉强及格！牛 3", 4: "🛡️ 防守牌！牛 4", 5: "🤔 有得拼！牛 5", 6: "💪 坐和望赢！牛 6", 7: "🤩 漂亮起飞！牛 7", 8: "💰 准备收钱！牛 8", 9: "🚀 赢到笑！牛 9" };
+                applyResultView(textMap[bestScore], bestScore <= 6 ? "color-normal" : "color-red", bestScore <= 6 ? "anim-pop" : "anim-bounce", false, finalPoints, finalBase, bestScore);
             }
         }
 
-        function applyResultView(text, colorClass, animClass, isPremium, topCards, bottomCards) {
+        function applyResultView(text, colorClass, animClass, isPremium, topCards, bottomCards, scoreType) {
             vibrate(isPremium ? [50, 50, 100] : (topCards.length > 0 ? 100 : [30, 30])); 
             
             if (topCards.length > 0 && bottomCards.length === 3) {
                 DOM.slots.classList.add('result-mode'); 
-                DOM.slots.innerHTML = `
-                    <div class="card-row">
-                        ${topCards.map(c => getCardHTML(c, true)).join('')}
-                    </div>
-                    <div class="card-row">
-                        ${bottomCards.map(c => getCardHTML(c, true)).join('')}
-                    </div>
-                `;
+                DOM.slots.innerHTML = `<div class="card-row">${topCards.map(c => getCardHTML(c, true)).join('')}</div><div class="card-row">${bottomCards.map(c => getCardHTML(c, true)).join('')}</div>`;
             } else {
                 DOM.slots.classList.remove('result-mode');
                 DOM.slots.innerHTML = bottomCards.map(c => getCardHTML(c, true)).join('');
             }
 
-            DOM.resultTitle.className = `result-title`; 
-            void DOM.resultTitle.offsetWidth; 
+            let mult = 1;
+            if (scoreType >= 7 && scoreType <= 9) mult = config.multBig;
+            else if (scoreType === 10) mult = config.multNiu;
+            else if (scoreType >= 11) mult = config.multSpec;
+
+            let winAmt = config.baseBet * mult;
             
+            DOM.resultTitle.className = `result-title`; void DOM.resultTitle.offsetWidth; 
             DOM.resultTitle.innerText = text;
             DOM.resultTitle.className = `result-title show ${colorClass} ${animClass}`;
+
+            DOM.moneyDisplay.className = 'money-tag'; void DOM.moneyDisplay.offsetWidth;
+            if (scoreType === -1) {
+                DOM.moneyDisplay.innerText = `📉 牌面本金: $${winAmt} (1倍)`;
+                DOM.moneyDisplay.classList.add('show', 'money-lose');
+            } else if (scoreType >= 1 && scoreType <= 6) {
+                DOM.moneyDisplay.innerText = `💵 若赢可得: +$${winAmt} (1倍)`;
+                DOM.moneyDisplay.classList.add('show', 'money-win');
+            } else {
+                DOM.moneyDisplay.innerText = `💰 若赢可得: +$${winAmt} (${mult}倍)`;
+                DOM.moneyDisplay.classList.add('show', 'money-gold');
+            }
             
             setTimeout(() => { DOM.resetBtn.classList.add('show'); }, 300);
         }
 
+        loadConfig();
         renderPickingState();
-        
-        document.addEventListener('dblclick', function(event) {
-            event.preventDefault();
-        }, { passive: false });
+        document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
 
         (function checkVersion() {
-            // 版本升级至 1.0.4 刷新所有人的手机缓存
-            const currentVersion = "1.0.4"; 
+            const currentVersion = "1.0.6"; // 版本号已升级
             const localVersion = localStorage.getItem("magicniu_version");
-            
             if (localVersion !== currentVersion) {
                 localStorage.setItem("magicniu_version", currentVersion);
-                if (localVersion !== null) {
-                    window.location.reload(true);
-                }
+                if (localVersion !== null) window.location.reload(true);
             }
         })();
     </script>
